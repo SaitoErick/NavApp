@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRAS_BEACON = "extrasBeacon";
     private static final int REQUEST_ENABLE_BT = 1234;
     private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region("rid", null, null, null);
-
+    private static final String UrlService = "http://citbeacons.appspot.com/ws/beacon/findByMacAddress/macAddress=";
     String beaconMacAddress = "";
 
     @Override
@@ -60,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         restJson = (TextView) findViewById(R.id.textView);
-
         beaconManager = new BeaconManager(this);
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
@@ -68,8 +68,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override public void run() {
                         if( beacons.size() > 0 ) {
                             beaconMacAddress = beacons.get(0).getMacAddress();
-                            restJson.setText(beaconMacAddress);
-                            JsonObjectRequest request = new JsonObjectRequest("http://citbeacons.appspot.com/ws/beacon/findByMacAddress/macAddress=01:0C:6E:3C:D1:6D", null,
+                            JsonObjectRequest request = new JsonObjectRequest(UrlService + beaconMacAddress, null,
                                     new Response.Listener<JSONObject>() {
                                         @Override
                                         public void onResponse(JSONObject response) {
@@ -77,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                                             try {
                                                 JSONObject jsonResult = response.getJSONObject("payload");
                                                 restJson.setText(jsonResult.getString("description"));
+                                                Toast.makeText(getApplicationContext(),jsonResult.getString("description"), Toast.LENGTH_LONG).show();
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }
