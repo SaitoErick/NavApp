@@ -1,7 +1,9 @@
 package com.ciandt.thegarage.navapp;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +28,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -55,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
     private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region("rid", null, null, null);
     private static final String UrlService = "http://citbeacons.appspot.com/ws/beacon/findByMacAddress/macAddress=";
     String beaconMacAddress = "";
+    String ultimoBeaconMacAddress ="";
+    String proximoBeaconNaArea = "";
+    String beaconsAntecessores = "";
+    String mensagemBeacon = "";
+    String mensagemFinalAoUsuario = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,39 +72,89 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         restJson = (TextView) findViewById(R.id.textView);
         beaconManager = new BeaconManager(this);
+
+        final ArrayList<String> beaconsAntecessoresLista= new ArrayList<>();
+        final LinkedHashMap<String,String> mensagensBeaconsAntecessoresChaveValor = new LinkedHashMap<>();
+
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
                 runOnUiThread(new Runnable() {
-                    @Override public void run() {
-                        if( beacons.size() > 0 ) {
+                    @Override
+                    public void run() {
+                        if (beacons.size() > 0) {
                             beaconMacAddress = beacons.get(0).getMacAddress();
-                            JsonObjectRequest request = new JsonObjectRequest(UrlService + beaconMacAddress, null,
-                                    new Response.Listener<JSONObject>() {
-                                        @Override
-                                        public void onResponse(JSONObject response) {
-                                            restJson.setText(response.toString());
-                                            try {
-                                                JSONObject jsonResult = response.getJSONObject("payload");
-                                                restJson.setText(jsonResult.getString("description"));
-                                                Toast.makeText(getApplicationContext(),jsonResult.getString("description"), Toast.LENGTH_LONG).show();
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
+
+                            /*if (beaconMacAddress.equals("D7:A5:E8:49:E2:17")) {
+                                beaconsAntecessores = "F7:C1:D2:76:F4:B6";
+                                mensagemBeacon = "CaminhoFeliz:Bem vindo a o escritorio, vire a esquerda e desça as escadas|CaminhoAlternativo:Obrigado por ter vindo.";
+                            } else {
+                                beaconsAntecessores = "";
+                                mensagemBeacon = "CaminhoFeliz:Bem vindo a recepção";
+                            }*/
+
+                            if (!beaconMacAddress.equals(ultimoBeaconMacAddress)) {
+                                JsonObjectRequest request = new JsonObjectRequest(UrlService + beaconMacAddress, null,
+                                        new Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                try {
+                                                    JSONObject jsonResult = response.getJSONObject("payload");
+                                                    beaconsAntecessores = jsonResult.getString("description");
+                                                    mensagemBeacon = jsonResult.getString("message");
+
+                                                    String splitTemp[] = beaconsAntecessores.split("\\;");
+                                                    for (int i = 0; i < splitTemp.length; i++) {
+                                                        beaconsAntecessoresLista.add(splitTemp[i]);
+                                                    }
+
+                                                    splitTemp = mensagemBeacon.split("\\|");
+                                                    for (int i = 0; i < splitTemp.length; i++) {
+                                                        String splitTemp2[] = splitTemp[i].split(":");
+                                                        mensagensBeaconsAntecessoresChaveValor.put(splitTemp2[0], splitTemp2[1]);
+                                                    }
+
+                                                    restJson.setText("Beacon Atual: " + beaconMacAddress + "\n\nBeacon Anterior: " + ultimoBeaconMacAddress
+                                                            +"\n\n Mensagem: \n "  );
+
+                                                    if(!beaconsAntecessoresLista.contains(ultimoBeaconMacAddress)) {
+                                                        mensagemFinalAoUsuario = mensagensBeaconsAntecessoresChaveValor.get("CaminhoEntrada");
+                                                    } else {
+                                                        mensagemFinalAoUsuario = mensagensBeaconsAntecessoresChaveValor.get("CaminhoSaida");
+                                                    }
+
+                                                    restJson.setText("Beacon Atual: " + beaconMacAddress + "\n\nBeacon Anterior: " + ultimoBeaconMacAddress
+                                                            + "\n\n Mensagem: \n " + mensagemFinalAoUsuario);
+
+                                                    Toast.makeText(getApplicationContext(), mensagemFinalAoUsuario, Toast.LENGTH_LONG).show();
+
+                                                    if (!beaconMacAddress.equals(ultimoBeaconMacAddress)) {
+                                                        ultimoBeaconMacAddress = beaconMacAddress;
+                                                    }
+
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        },
+
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                restJson.setText(error.toString());
                                             }
                                         }
-                                    },
 
-                                    new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            restJson.setText(error.toString());
-                                        }
-                                    }
-                            );
-                            VolleyApplication.getInstance().getRequestQueue().add(request);
+
+                                );
+
+                                VolleyApplication.getInstance().getRequestQueue().add(request);
+
+                            }
+
+
                         }
-
-
                     }
+
                 });
             }
         });
