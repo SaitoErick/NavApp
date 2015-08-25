@@ -27,9 +27,8 @@ public class TimerRun {
     private Context context;
     private static final String UrlService = "http://citbeacons.appspot.com/ws/beacon/findByMacAddress/macAddress=";
     private Repository repository;
-    final ArrayList<String> beaconsAntecessoresLista= new ArrayList<>();
-    final LinkedHashMap<String,String> mensagensBeaconsAntecessoresChaveValor = new LinkedHashMap<>();
-
+    final ArrayList<String> beaconsAntecessoresLista = new ArrayList<>();
+    final LinkedHashMap<String, String> mensagensBeaconsAntecessoresChaveValor = new LinkedHashMap<>();
 
 
     public TimerRun(Context context) {
@@ -42,61 +41,84 @@ public class TimerRun {
         task = new TimerTask() {
             @Override
             public void run() {
-                String beaconMacAddress = repository.get("macaddress");
+                JSONObject beaconMacAddress = null;
+                JSONObject beaconMacAddressAnterior = null;
+                try {
+                    beaconMacAddress = new JSONObject().getJSONObject(repository.get("beacon"));
+                    beaconMacAddressAnterior = new JSONObject().getJSONObject(repository.get("beaconAnterior"));
 
-                JsonObjectRequest request = new JsonObjectRequest(UrlService + beaconMacAddress, null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    JSONObject jsonResult = response.getJSONObject("payload");
-                                    String beaconsAntecessores = jsonResult.getString("description");
-                                    String mensagemBeacon = jsonResult.getString("message");
-
-                                    String splitTemp[] = beaconsAntecessores.split("\\;");
-                                    for (int i = 0; i < splitTemp.length; i++) {
-                                        beaconsAntecessoresLista.add(splitTemp[i]);
-                                    }
-
-                                    splitTemp = mensagemBeacon.split("\\|");
-                                    for (int i = 0; i < splitTemp.length; i++) {
-                                        String splitTemp2[] = splitTemp[i].split(":");
-                                        mensagensBeaconsAntecessoresChaveValor.put(splitTemp2[0], splitTemp2[1]);
-                                    }
-
-                                    // if(!beaconsAntecessoresLista.contains(ultimoBeaconMacAddress)) {
-                                    //   mensagemFinalAoUsuario = mensagensBeaconsAntecessoresChaveValor.get("CaminhoEntrada");
-                                    //} else {
-                                    //    mensagemFinalAoUsuario = mensagensBeaconsAntecessoresChaveValor.get("CaminhoSaida");
-                                    //}
-
-                                    //restJson.setText("Beacon Atual: " + beaconMacAddress + "\n\nBeacon Anterior: " + ultimoBeaconMacAddress
-                                    //        + "\n\n Mensagem: \n " + mensagemFinalAoUsuario);
-
-                                    Toast.makeText(context, mensagemBeacon, Toast.LENGTH_LONG).show();
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        },
-
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                //restJson.setText(error.toString());
+                    if (beaconMacAddressAnterior != null) {
+                        if (beaconMacAddress.getString("macAddress").equals(beaconMacAddressAnterior.getString("macAddress"))) {
+                            if (beaconMacAddress.getInt("rssi") != beaconMacAddressAnterior.getInt("rssi")) {
+                                jsonBuscar(beaconMacAddress.getString("macAddress"));
                             }
                         }
+                    }else {
+                        jsonBuscar(beaconMacAddress.getString("macAddress"));
+                    }
 
-
-                );
-
-                VolleyApplication.getInstance().getRequestQueue().add(request);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
 
+
         };
-        timer.schedule(task,5000,5000);
+        timer.schedule(task, 5000, 5000);
+    }
+
+    private void jsonBuscar(String beaconMacAddress) {
+        JsonObjectRequest request = new JsonObjectRequest(UrlService + beaconMacAddress, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject jsonResult = response.getJSONObject("payload");
+                            String beaconsAntecessores = jsonResult.getString("description");
+                            String mensagemBeacon = jsonResult.getString("message");
+
+                            String splitTemp[] = beaconsAntecessores.split("\\;");
+                            for (int i = 0; i < splitTemp.length; i++) {
+                                beaconsAntecessoresLista.add(splitTemp[i]);
+                            }
+
+                            splitTemp = mensagemBeacon.split("\\|");
+                            for (int i = 0; i < splitTemp.length; i++) {
+                                String splitTemp2[] = splitTemp[i].split(":");
+                                mensagensBeaconsAntecessoresChaveValor.put(splitTemp2[0], splitTemp2[1]);
+                            }
+
+                            String ultimoBeaconMacAddress = "";
+                            String mensagemFinalAoUsuario = "";
+
+                            if (!beaconsAntecessoresLista.contains(ultimoBeaconMacAddress)) {
+                                mensagemFinalAoUsuario = mensagensBeaconsAntecessoresChaveValor.get("CaminhoEntrada");
+                            } else {
+                                mensagemFinalAoUsuario = mensagensBeaconsAntecessoresChaveValor.get("CaminhoSaida");
+                            }
+
+                            Toast.makeText(context, mensagemFinalAoUsuario, Toast.LENGTH_LONG).show();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //restJson.setText(error.toString());
+                    }
+                }
+
+
+        );
+
+        VolleyApplication.getInstance().getRequestQueue().add(request);
+
+
     }
 
 }

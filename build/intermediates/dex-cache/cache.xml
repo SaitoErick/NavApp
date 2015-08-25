@@ -2,46 +2,46 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\Emerson\.gradle\caches\modules-2\files-2.1\com.mcxiaoke.volley\library\1.0.18\38da306aafee11459cd935a01d2c92a98dc670a4\library-1.0.18.jar"
+        jar="/Users/alans/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/22.2.1/support-annotations-22.2.1.jar"
         jumboMode="false"
-        revision="23.0.0 rc3"
-        sha1="38da306aafee11459cd935a01d2c92a98dc670a4">
-        <dex dex="D:\Dropbox\AndroidStudioProjects\NavApp\app\build\intermediates\pre-dexed\debug\library-1.0.18-31a8ccd399b529dd77598974d5b4a23f7fb4e5e3.jar" />
-    </item>
-    <item
-        jar="D:\Dropbox\AndroidStudioProjects\NavApp\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\libs\internal_impl-22.2.1.jar"
-        jumboMode="false"
-        revision="23.0.0 rc3"
-        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
-        <dex dex="D:\Dropbox\AndroidStudioProjects\NavApp\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.1-8abd6bc2a7d798701e44bafbb721d405b9c8e410.jar" />
-    </item>
-    <item
-        jar="D:\Dropbox\AndroidStudioProjects\NavApp\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.1\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.0 rc3"
-        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
-        <dex dex="D:\Dropbox\AndroidStudioProjects\NavApp\app\build\intermediates\pre-dexed\debug\classes-4546f8d81678f1e6d06cd8d262dd0121657d7e1e.jar" />
-    </item>
-    <item
-        jar="C:\Users\Emerson\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.1\support-annotations-22.2.1.jar"
-        jumboMode="false"
-        revision="23.0.0 rc3"
+        revision="22.0.1"
         sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
-        <dex dex="D:\Dropbox\AndroidStudioProjects\NavApp\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.1-92c6cbc9ecff0be7bec899a7ce80bdac30d637b1.jar" />
+        <dex dex="/Users/alans/AndroidStudioProjects/NavApp/app/build/intermediates/pre-dexed/debug/support-annotations-22.2.1-8fffa6a4f9a08823044d566a4355d793eb6ca794.jar" />
     </item>
     <item
-        jar="D:\Dropbox\AndroidStudioProjects\NavApp\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\classes.jar"
+        jar="/Users/alans/AndroidStudioProjects/NavApp/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/libs/internal_impl-22.2.1.jar"
         jumboMode="false"
-        revision="23.0.0 rc3"
+        revision="22.0.1"
+        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
+        <dex dex="/Users/alans/AndroidStudioProjects/NavApp/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.1-81f8dc789efb237e73413c0fc4c1374841133bf6.jar" />
+    </item>
+    <item
+        jar="/Users/alans/AndroidStudioProjects/NavApp/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
         sha1="f8efd0096475e0daf054267b61544e10dc776503">
-        <dex dex="D:\Dropbox\AndroidStudioProjects\NavApp\app\build\intermediates\pre-dexed\debug\classes-d5f386abbc723961bc86ec599ac0ee9ec71944b0.jar" />
+        <dex dex="/Users/alans/AndroidStudioProjects/NavApp/app/build/intermediates/pre-dexed/debug/classes-ee24b648e1011c121ce60cc5d8b2b6343c4a3934.jar" />
     </item>
     <item
-        jar="D:\Dropbox\AndroidStudioProjects\NavApp\app\build\intermediates\exploded-aar\estimote-sdk\jars\classes.jar"
+        jar="/Users/alans/.gradle/caches/modules-2/files-2.1/com.mcxiaoke.volley/library/1.0.18/38da306aafee11459cd935a01d2c92a98dc670a4/library-1.0.18.jar"
         jumboMode="false"
-        revision="23.0.0 rc3"
+        revision="22.0.1"
+        sha1="38da306aafee11459cd935a01d2c92a98dc670a4">
+        <dex dex="/Users/alans/AndroidStudioProjects/NavApp/app/build/intermediates/pre-dexed/debug/library-1.0.18-424bb50a5a78c63c47d063cd1e991f2f45080c88.jar" />
+    </item>
+    <item
+        jar="/Users/alans/AndroidStudioProjects/NavApp/app/build/intermediates/exploded-aar/estimote-sdk/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
         sha1="e59d7cdbacecfd4bdbe6b627c30f8bfb06544714">
-        <dex dex="D:\Dropbox\AndroidStudioProjects\NavApp\app\build\intermediates\pre-dexed\debug\classes-95afe4cd21c1d89e949282b8793271bcec01ef73.jar" />
+        <dex dex="/Users/alans/AndroidStudioProjects/NavApp/app/build/intermediates/pre-dexed/debug/classes-6faeb8bf097f9e8746e04c1f6969644300fa0630.jar" />
+    </item>
+    <item
+        jar="/Users/alans/AndroidStudioProjects/NavApp/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
+        <dex dex="/Users/alans/AndroidStudioProjects/NavApp/app/build/intermediates/pre-dexed/debug/classes-b05bd1191d35067b79cbe31e3935eb1a820a76fe.jar" />
     </item>
 
 </items>

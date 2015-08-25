@@ -87,8 +87,17 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        beaconMacAddress = beacons.get(0).getMacAddress();
-                        repository.put("macaddress", beaconMacAddress);
+                        JSONObject jsonObj = new JSONObject();
+
+                        try {
+                            jsonObj.put("macAddress", beacons.get(0).getMacAddress());
+                            jsonObj.put("rssi", beacons.get(0).getRssi());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        String beaconAnterior = repository.get("beacon");
+                        repository.put("beacon", jsonObj.toString());
+                        repository.put("beaconAnterior", beaconAnterior);
                     }
 
                 });
