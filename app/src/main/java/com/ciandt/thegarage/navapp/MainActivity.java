@@ -15,6 +15,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     String beaconsAntecessores = "";
     String mensagemBeacon = "";
     String mensagemFinalAoUsuario = "";
+    private Repository repository;
+
 
 
     @Override
@@ -73,92 +76,27 @@ public class MainActivity extends AppCompatActivity {
         restJson = (TextView) findViewById(R.id.textView);
         beaconManager = new BeaconManager(this);
 
-        final ArrayList<String> beaconsAntecessoresLista= new ArrayList<>();
-        final LinkedHashMap<String,String> mensagensBeaconsAntecessoresChaveValor = new LinkedHashMap<>();
+        TimerRun timerRun = new TimerRun(this);
+        timerRun.start();
+
+        repository = new Repository(this);
 
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
-            @Override public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
+            @Override
+            public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (beacons.size() > 0) {
-                            beaconMacAddress = beacons.get(0).getMacAddress();
-
-                            /*if (beaconMacAddress.equals("D7:A5:E8:49:E2:17")) {
-                                beaconsAntecessores = "F7:C1:D2:76:F4:B6";
-                                mensagemBeacon = "CaminhoFeliz:Bem vindo a o escritorio, vire a esquerda e desça as escadas|CaminhoAlternativo:Obrigado por ter vindo.";
-                            } else {
-                                beaconsAntecessores = "";
-                                mensagemBeacon = "CaminhoFeliz:Bem vindo a recepção";
-                            }*/
-
-                            if (!beaconMacAddress.equals(ultimoBeaconMacAddress)) {
-                                JsonObjectRequest request = new JsonObjectRequest(UrlService + beaconMacAddress, null,
-                                        new Response.Listener<JSONObject>() {
-                                            @Override
-                                            public void onResponse(JSONObject response) {
-                                                try {
-                                                    JSONObject jsonResult = response.getJSONObject("payload");
-                                                    beaconsAntecessores = jsonResult.getString("description");
-                                                    mensagemBeacon = jsonResult.getString("message");
-
-                                                    String splitTemp[] = beaconsAntecessores.split("\\;");
-                                                    for (int i = 0; i < splitTemp.length; i++) {
-                                                        beaconsAntecessoresLista.add(splitTemp[i]);
-                                                    }
-
-                                                    splitTemp = mensagemBeacon.split("\\|");
-                                                    for (int i = 0; i < splitTemp.length; i++) {
-                                                        String splitTemp2[] = splitTemp[i].split(":");
-                                                        mensagensBeaconsAntecessoresChaveValor.put(splitTemp2[0], splitTemp2[1]);
-                                                    }
-
-                                                    restJson.setText("Beacon Atual: " + beaconMacAddress + "\n\nBeacon Anterior: " + ultimoBeaconMacAddress
-                                                            +"\n\n Mensagem: \n "  );
-
-                                                    if(!beaconsAntecessoresLista.contains(ultimoBeaconMacAddress)) {
-                                                        mensagemFinalAoUsuario = mensagensBeaconsAntecessoresChaveValor.get("CaminhoEntrada");
-                                                    } else {
-                                                        mensagemFinalAoUsuario = mensagensBeaconsAntecessoresChaveValor.get("CaminhoSaida");
-                                                    }
-
-                                                    restJson.setText("Beacon Atual: " + beaconMacAddress + "\n\nBeacon Anterior: " + ultimoBeaconMacAddress
-                                                            + "\n\n Mensagem: \n " + mensagemFinalAoUsuario);
-
-                                                    Toast.makeText(getApplicationContext(), mensagemFinalAoUsuario, Toast.LENGTH_LONG).show();
-
-                                                    if (!beaconMacAddress.equals(ultimoBeaconMacAddress)) {
-                                                        ultimoBeaconMacAddress = beaconMacAddress;
-                                                    }
-
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        },
-
-                                        new Response.ErrorListener() {
-                                            @Override
-                                            public void onErrorResponse(VolleyError error) {
-                                                restJson.setText(error.toString());
-                                            }
-                                        }
-
-
-                                );
-
-                                VolleyApplication.getInstance().getRequestQueue().add(request);
-
-                            }
-
-
-                        }
+                        beaconMacAddress = beacons.get(0).getMacAddress();
+                        repository.put("macaddress", beaconMacAddress);
                     }
 
                 });
             }
         });
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
