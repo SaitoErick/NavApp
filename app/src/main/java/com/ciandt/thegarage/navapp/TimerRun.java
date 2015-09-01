@@ -1,6 +1,7 @@
 package com.ciandt.thegarage.navapp;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -44,15 +45,21 @@ public class TimerRun {
                 JSONObject beaconMacAddress = null;
                 JSONObject beaconMacAddressAnterior = null;
                 try {
-                    beaconMacAddress = new JSONObject().getJSONObject(repository.get("beacon"));
-                    beaconMacAddressAnterior = new JSONObject().getJSONObject(repository.get("beaconAnterior"));
+                    String beaconAtual = repository.get(Constants.BEACON_ATUAL_KEY);
+                    String beaconAnterior = repository.get(Constants.BEACON_ANTERIOR_KEY);
 
+                    if(beaconAtual != null) {
+                        beaconMacAddress = new JSONObject(beaconAtual);
+                    }
+                    if(beaconAnterior != null) {
+                        beaconMacAddressAnterior = new JSONObject(beaconAnterior);
+                    }
                     if (beaconMacAddressAnterior != null) {
-                        if (beaconMacAddress.getString("macAddress").equals(beaconMacAddressAnterior.getString("macAddress"))) {
+                        //if (beaconMacAddress.getString("macAddress").equals(beaconMacAddressAnterior.getString("macAddress"))) {
                             if (beaconMacAddress.getInt("rssi") != beaconMacAddressAnterior.getInt("rssi")) {
                                 jsonBuscar(beaconMacAddress.getString("macAddress"));
                             }
-                        }
+                        //}
                     }else {
                         jsonBuscar(beaconMacAddress.getString("macAddress"));
                     }
@@ -65,7 +72,7 @@ public class TimerRun {
 
 
         };
-        timer.schedule(task, 5000, 5000);
+        timer.schedule(task, 10000, 10000);
     }
 
     private void jsonBuscar(String beaconMacAddress) {
@@ -98,7 +105,7 @@ public class TimerRun {
                                 mensagemFinalAoUsuario = mensagensBeaconsAntecessoresChaveValor.get("CaminhoSaida");
                             }
 
-                            Toast.makeText(context, mensagemFinalAoUsuario, Toast.LENGTH_LONG).show();
+                            Toast.makeText(context.getApplicationContext(), mensagemFinalAoUsuario, Toast.LENGTH_LONG).show();
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -109,6 +116,7 @@ public class TimerRun {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.d("BEACON", error.toString());
                         //restJson.setText(error.toString());
                     }
                 }

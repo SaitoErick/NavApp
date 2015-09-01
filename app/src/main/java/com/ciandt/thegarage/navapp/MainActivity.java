@@ -95,9 +95,8 @@ public class MainActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        String beaconAnterior = repository.get("beacon");
-                        repository.put("beacon", jsonObj.toString());
-                        repository.put("beaconAnterior", beaconAnterior);
+                        repository.put(Constants.BEACON_ANTERIOR_KEY, repository.get(Constants.BEACON_ATUAL_KEY));
+                        repository.put(Constants.BEACON_ATUAL_KEY, jsonObj.toString());
                     }
 
                 });
