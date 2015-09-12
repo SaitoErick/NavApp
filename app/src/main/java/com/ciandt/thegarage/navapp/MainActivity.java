@@ -66,8 +66,7 @@ public class MainActivity extends AppCompatActivity {
     String mensagemBeacon = "";
     String mensagemFinalAoUsuario = "";
     private Repository repository;
-
-
+    private TimerRun timerRun;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,9 +75,7 @@ public class MainActivity extends AppCompatActivity {
         restJson = (TextView) findViewById(R.id.textView);
         beaconManager = new BeaconManager(this);
 
-        TimerRun timerRun = new TimerRun(this);
-        timerRun.start();
-
+        timerRun = new TimerRun(this);
         repository = new Repository(this);
 
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
@@ -98,13 +95,10 @@ public class MainActivity extends AppCompatActivity {
                         repository.put(Constants.BEACON_ANTERIOR_KEY, repository.get(Constants.BEACON_ATUAL_KEY));
                         repository.put(Constants.BEACON_ATUAL_KEY, jsonObj.toString());
                     }
-
                 });
             }
         });
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -130,21 +124,29 @@ public class MainActivity extends AppCompatActivity {
 
     @Override protected void onStart() {
         super.onStart();
+
+        //Verificando se o Device tem Bluetooth
         if (!beaconManager.hasBluetooth()) {
             Toast.makeText(this, "Device does not have Bluetooth Low Energy", Toast.LENGTH_LONG).show();
             return;
         }
 
+        //Verificando se o Bluetooth está habilitando
         if (!beaconManager.isBluetoothEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+
+            Log.i("Main", "startActivityForResult");
+            //return;
         } else {
             connectToService();
+            timerRun.start();
         }
     }
 
     @Override protected void onStop() {
         try {
+            //Stop busca de Beacon
             beaconManager.stopRanging(ALL_ESTIMOTE_BEACONS_REGION);
         } catch (RemoteException e) {
             Log.d(TAG, "Error while stopping ranging", e);
@@ -165,5 +167,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // Verificando acesso a permissão
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(MainActivity.this, "Não foi dada a permissão de habilitar o Bluetooth", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            // Aceito
+            if (resultCode == RESULT_OK) {
+                connectToService();
+                timerRun.start();
+            }
+        }
     }
 }

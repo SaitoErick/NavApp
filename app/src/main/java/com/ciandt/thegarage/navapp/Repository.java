@@ -21,7 +21,7 @@ public class Repository {
     }
 
     public void put(String key, String value) {
-        SharedPreferences.Editor editor= sharedPreferences.edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, value);
         editor.commit();
     }

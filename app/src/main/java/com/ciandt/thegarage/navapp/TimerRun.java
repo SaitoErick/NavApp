@@ -51,23 +51,24 @@ public class TimerRun {
                     if(beaconAtual != null) {
                         beaconMacAddress = new JSONObject(beaconAtual);
                     }
+
                     if(beaconAnterior != null) {
                         beaconMacAddressAnterior = new JSONObject(beaconAnterior);
                     }
+
                     if (beaconMacAddressAnterior != null) {
                         //if (beaconMacAddress.getString("macAddress").equals(beaconMacAddressAnterior.getString("macAddress"))) {
                             if (beaconMacAddress.getInt("rssi") != beaconMacAddressAnterior.getInt("rssi")) {
                                 jsonBuscar(beaconMacAddress.getString("macAddress"));
                             }
                         //}
-                    }else {
+                    } else {
                         jsonBuscar(beaconMacAddress.getString("macAddress"));
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
 
 
@@ -120,13 +121,8 @@ public class TimerRun {
                         //restJson.setText(error.toString());
                     }
                 }
-
-
         );
 
         VolleyApplication.getInstance().getRequestQueue().add(request);
-
-
     }
-
 }
