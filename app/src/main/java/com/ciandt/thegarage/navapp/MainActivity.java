@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -19,6 +20,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.ciandt.thegarage.navapp.adapter.MainPagerAdapter;
+import com.ciandt.thegarage.navapp.view.SlidingTabLayout;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
@@ -60,14 +63,36 @@ public class MainActivity extends AppCompatActivity {
     private Repository repository;
     private TimerRun timerRun;
 
+    private ViewPager mViewPager;
+    private Context mContext;
+    private MainPagerAdapter mMainPagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        beaconManager = new BeaconManager(this);
 
+        beaconManager = new BeaconManager(this);
         timerRun = new TimerRun(this);
         repository = new Repository(this);
+
+        mViewPager = (ViewPager) findViewById(R.id.view_pager_main);
+        mMainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), MainActivity.this);
+        mViewPager.setAdapter(mMainPagerAdapter);
+
+        SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs_home);
+        slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.color_accent);
+            }
+
+            @Override
+            public int getDividerColor(int position) {
+                return getResources().getColor(R.color.white);
+            }
+        });
+        slidingTabLayout.setViewPager(mViewPager);
 
         beaconManager.setForegroundScanPeriod(TimeUnit.SECONDS.toMillis(Constants.PERIOD_MILLIS_SCAN_RANGING), Constants.WAIT_TIME_MILLIS_SCAN_RANGING);
 
@@ -148,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override protected void onResume(){
         super.onResume();
+        this.mViewPager.setCurrentItem(0);
     }
 
     @Override protected void onStop() {
