@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 public class NavigationFragment extends Fragment {
 
     private BeaconManager mBeaconManager;
-    private static final String TAG = NavigationFragment.class.getSimpleName();
+    private String TAG = NavigationFragment.class.getSimpleName();
 
     private static final int NOTIFICATION_ID = 123;
 
@@ -69,28 +69,14 @@ public class NavigationFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //timerRun = new TimerRun(this);
-        //repository = new Repository(this);
+        super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate");
 
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        return inflater.inflate(R.layout.fragment_navigation2, container, false);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        //beaconManager.setForegroundScanPeriod(TimeUnit.SECONDS.toMillis(Constants.PERIOD_MILLIS_SCAN_RANGING), Constants.WAIT_TIME_MILLIS_SCAN_RANGING);
+        mBeaconManager = new BeaconManager(getActivity().getApplicationContext());
+        mBeaconManager.setForegroundScanPeriod(TimeUnit.SECONDS.toMillis(Constants.PERIOD_MILLIS_SCAN_RANGING), Constants.WAIT_TIME_MILLIS_SCAN_RANGING);
 
         // CallBack Scan Beacons
-        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
+        mBeaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -110,8 +96,8 @@ public class NavigationFragment extends Fragment {
                                 jsonObj.put("macAddress", beacons.get(0).getMacAddress());
                                 jsonObj.put("rssi", beacons.get(0).getRssi());
 
-                                repository.put(Constants.BEACON_ANTERIOR_KEY, repository.get(Constants.BEACON_ATUAL_KEY));
-                                repository.put(Constants.BEACON_ATUAL_KEY, jsonObj.toString());
+                                //repository.put(Constants.BEACON_ANTERIOR_KEY, repository.get(Constants.BEACON_ATUAL_KEY));
+                                //repository.put(Constants.BEACON_ATUAL_KEY, jsonObj.toString());
                             }
 
                         } catch (JSONException e) {
@@ -121,7 +107,20 @@ public class NavigationFragment extends Fragment {
                 });
             }
         });
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView");
+
+        return inflater.inflate(R.layout.fragment_navigation2, container, false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart");
 
         //Verificando se o Device tem Bluetooth
         if (!mBeaconManager.hasBluetooth()) {
@@ -142,23 +141,26 @@ public class NavigationFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.i(TAG, "onResume");
     }
 
     @Override
     public void onStop() {
-        /*try {
+        super.onStop();
+        Log.i(TAG, "onStop");
+        try {
             //Stop busca de Beacon
             mBeaconManager.stopRanging(ALL_ESTIMOTE_BEACONS_REGION);
         } catch (RemoteException e) {
             Log.d(TAG, "Error while stopping ranging", e);
-        }*/
-        super.onStop();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mBeaconManager.disconnect();
+        Log.i(TAG, "onDestroy");
     }
 
     @Override
@@ -181,11 +183,11 @@ public class NavigationFragment extends Fragment {
 
     private void connectToServiceScannBeacon() {
         Collections.<Beacon>emptyList();
-        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+        mBeaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
                 try {
-                    beaconManager.startRanging(ALL_ESTIMOTE_BEACONS_REGION);
+                    mBeaconManager.startRanging(ALL_ESTIMOTE_BEACONS_REGION);
                 } catch (RemoteException e) {
                     Toast.makeText(getActivity().getApplicationContext(), "Cannot start ranging, something terrible happened", Toast.LENGTH_LONG).show();
                     Log.e(TAG, "Cannot start ranging", e);
