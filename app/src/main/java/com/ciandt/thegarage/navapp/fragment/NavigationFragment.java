@@ -21,6 +21,7 @@ import com.ciandt.thegarage.navapp.R;
 import com.ciandt.thegarage.navapp.Repository;
 import com.ciandt.thegarage.navapp.TimerRun;
 import com.ciandt.thegarage.navapp.adapter.MainPagerAdapter;
+import com.ciandt.thegarage.navapp.model.BeaconsNavigationModel;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,6 +53,7 @@ public class NavigationFragment extends Fragment {
 
     private Beacon beacon;
     private Region region;
+    private List<BeaconsNavigationModel> mListBeaconsNavigationModel;
 
     private int startY = -1;
     private int segmentLength = -1;
@@ -74,46 +77,13 @@ public class NavigationFragment extends Fragment {
 
         mBeaconManager = new BeaconManager(getActivity().getApplicationContext());
         mBeaconManager.setForegroundScanPeriod(TimeUnit.SECONDS.toMillis(Constants.PERIOD_MILLIS_SCAN_RANGING), Constants.WAIT_TIME_MILLIS_SCAN_RANGING);
-
-        // CallBack Scan Beacons
-        mBeaconManager.setRangingListener(new BeaconManager.RangingListener() {
-            @Override
-            public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        Log.i(TAG, "setRangingListener--onBeaconsDiscovered");
-                        JSONObject jsonObj = new JSONObject();
-
-                        try {
-
-                            Log.i(TAG, "setRangingListener--onBeaconsDiscovered::" + beacons.toString());
-
-                            if (beacons != null && beacons.size() > 0) {
-                                Toast.makeText(getActivity().getApplicationContext(), "macAddress:" + beacons.get(0).getMacAddress().toString(), Toast.LENGTH_LONG).show();
-
-                                jsonObj.put("macAddress", beacons.get(0).getMacAddress());
-                                jsonObj.put("rssi", beacons.get(0).getRssi());
-
-                                //repository.put(Constants.BEACON_ANTERIOR_KEY, repository.get(Constants.BEACON_ATUAL_KEY));
-                                //repository.put(Constants.BEACON_ATUAL_KEY, jsonObj.toString());
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
-        });
+        callBackScannBeacons();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
-
         return inflater.inflate(R.layout.fragment_navigation2, container, false);
     }
 
@@ -134,7 +104,6 @@ public class NavigationFragment extends Fragment {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         } else {
             connectToServiceScannBeacon();
-            //timerRun.start();
         }
     }
 
@@ -188,10 +157,49 @@ public class NavigationFragment extends Fragment {
             public void onServiceReady() {
                 try {
                     mBeaconManager.startRanging(ALL_ESTIMOTE_BEACONS_REGION);
+                    Log.i(TAG, "startRanging");
                 } catch (RemoteException e) {
                     Toast.makeText(getActivity().getApplicationContext(), "Cannot start ranging, something terrible happened", Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "Cannot start ranging", e);
+                    Log.i(TAG, "Cannot start ranging", e);
                 }
+            }
+        });
+    }
+
+    public void callBackScannBeacons(){
+
+        mBeaconManager.setRangingListener(new BeaconManager.RangingListener() {
+            @Override
+            public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Log.i(TAG, "setRangingListener--onBeaconsDiscovered:: beacons::" + beacons.toString());
+                        BeaconsNavigationModel mBeaconsNavigationModel = new BeaconsNavigationModel();
+
+                        try {
+
+                            if (beacons != null && beacons.size() > 0) {
+                                Toast.makeText(getActivity().getApplicationContext(), "macAddress:" + beacons.get(0).getMacAddress().toString(), Toast.LENGTH_LONG).show();
+
+                                if (mBeaconsNavigationModel.beaconExistByMacAddress(beacons.get(0).getMacAddress().toString()) <= 0) {
+                                    Long returnSave = mBeaconsNavigationModel.save(beacons.get(0).getMacAddress().toString(), beacons.get(0).getRssi());
+                                    Log.i(TAG, "returnSave::" + returnSave);
+                                } else {
+                                    Log.i(TAG, "Beacon " + beacons.get(0).getMacAddress().toString() + " exist not save in DataBase Local");
+                                    Toast.makeText(getActivity().getApplicationContext(), "Beacon " + beacons.get(0).getMacAddress().toString() + " exist not save in DataBase Local", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        //mListBeaconsNavigationModel = mBeaconsNavigationModel.getAll();
+                        //Log.i(TAG, "setRangingListener--onBeaconsDiscovered::" + beacons.toString());
+                    }
+                });
             }
         });
     }

@@ -23,12 +23,13 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.estimote:sdk:0.8.7@aar'
     compile 'com.mcxiaoke.volley:library:1.0.+'
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
 }
 
 repositories {
     mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     flatDir {
         dirs 'libs'
     }
 }
-
