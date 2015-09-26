@@ -9,6 +9,6 @@ public class Constants {
 
     public static Integer PERIOD_MILLIS_REGION_MONITORING = 5;
     public static Integer WAIT_TIME_MILLIS_REGION_MONITORING = 5;
-    public static Integer PERIOD_MILLIS_SCAN_RANGING = 4;
-    public static Integer WAIT_TIME_MILLIS_SCAN_RANGING = 4;
+    public static Integer PERIOD_MILLIS_SCAN_RANGING = 3;
+    public static Integer WAIT_TIME_MILLIS_SCAN_RANGING = 6;
 }
