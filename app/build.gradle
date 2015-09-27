@@ -10,6 +10,10 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+
+        // Enabling multidex support.
+        multiDexEnabled true
+
     }
     buildTypes {
         release {
@@ -24,6 +28,7 @@ dependencies {
     compile 'com.estimote:sdk:0.8.7@aar'
     compile 'com.mcxiaoke.volley:library:1.0.+'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    compile 'com.android.support:multidex:1.0.0'
 }
 
 repositories {
