@@ -181,23 +181,26 @@ public class NavigationFragment extends Fragment {
                         try {
 
                             if (beacons != null && beacons.size() > 0) {
-                                Toast.makeText(getActivity().getApplicationContext(), "macAddress:" + beacons.get(0).getMacAddress().toString(), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity().getApplicationContext(), "macAddress:" + beacons.get(0).getMacAddress().toString(), Toast.LENGTH_LONG).show();
 
                                 if (mBeaconsNavigationModel.beaconExistByMacAddress(beacons.get(0).getMacAddress().toString()) <= 0) {
                                     Long returnSave = mBeaconsNavigationModel.save(beacons.get(0).getMacAddress().toString(), beacons.get(0).getRssi());
+                                    Toast.makeText(getActivity().getApplicationContext(), "Beacon " + beacons.get(0).getMacAddress().toString() + " salvo.", Toast.LENGTH_LONG).show();
                                     Log.i(TAG, "returnSave::" + returnSave);
                                 } else {
-                                    Log.i(TAG, "Beacon " + beacons.get(0).getMacAddress().toString() + " exist not save in DataBase Local");
-                                    Toast.makeText(getActivity().getApplicationContext(), "Beacon " + beacons.get(0).getMacAddress().toString() + " exist not save in DataBase Local", Toast.LENGTH_LONG).show();
+                                    Log.i(TAG, "Beacon " + beacons.get(0).getMacAddress().toString() + " já esta salvo.");
+                                    Toast.makeText(getActivity().getApplicationContext(), "Beacon " + beacons.get(0).getMacAddress().toString() + " já existe no banco.", Toast.LENGTH_LONG).show();
                                 }
+                            } else {
+                                Toast.makeText(getActivity().getApplicationContext(), "Não foi encontrado nenhum Beacon próximo.", Toast.LENGTH_LONG).show();
                             }
 
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
 
-                        //mListBeaconsNavigationModel = mBeaconsNavigationModel.getAll();
-                        //Log.i(TAG, "setRangingListener--onBeaconsDiscovered::" + beacons.toString());
+                        mListBeaconsNavigationModel = mBeaconsNavigationModel.getAll();
+                        Log.i(TAG, "setRangingListener--onBeaconsDiscovered::" + beacons.toString());
                     }
                 });
             }
