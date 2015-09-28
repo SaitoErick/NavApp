@@ -7,4 +7,5 @@
     <color name="color_accent">#FF4081</color>
     <color name="color_accent_dark">#F50057</color>
     <color name="color_accent_selected">#FF80AB</color>
+    <color name="black">#ff050505</color>
 </resources>

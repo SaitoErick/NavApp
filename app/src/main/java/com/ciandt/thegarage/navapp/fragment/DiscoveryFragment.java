@@ -32,7 +32,7 @@ public class DiscoveryFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_discovery2, container, false);
+        return inflater.inflate(R.layout.fragment_discovery, container, false);
     }
 
     @Override
