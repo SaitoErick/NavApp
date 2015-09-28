@@ -2,37 +2,30 @@ package com.ciandt.thegarage.navapp.fragment;
 
 
 import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.ParcelUuid;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ciandt.thegarage.navapp.Constants;
-import com.ciandt.thegarage.navapp.MainActivity;
 import com.ciandt.thegarage.navapp.R;
 import com.ciandt.thegarage.navapp.Repository;
 import com.ciandt.thegarage.navapp.TimerRun;
-import com.ciandt.thegarage.navapp.adapter.MainPagerAdapter;
+import com.ciandt.thegarage.navapp.adapter.BeaconListAdapter;
 import com.ciandt.thegarage.navapp.model.BeaconsNavigationModel;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -53,7 +46,6 @@ public class NavigationFragment extends Fragment {
 
     private Beacon beacon;
     private Region region;
-    private List<BeaconsNavigationModel> mListBeaconsNavigationModel;
 
     private int startY = -1;
     private int segmentLength = -1;
@@ -65,10 +57,10 @@ public class NavigationFragment extends Fragment {
     private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region("rid", null, null, null);
     private Repository repository;
     private TimerRun timerRun;
-
-    public NavigationFragment() {
-        // Required empty public constructor
-    }
+    private BeaconListAdapter adapter;
+    List<BeaconsNavigationModel> mBeaconNavigation;
+    ListView mList;
+    BeaconsNavigationModel mBeaconsNavigationModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,10 +73,23 @@ public class NavigationFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
-        return inflater.inflate(R.layout.fragment_navigation2, container, false);
+        View layout = inflater.inflate(R.layout.fragment_navigation, container, false);
+
+        mBeaconsNavigationModel = new BeaconsNavigationModel();
+        mBeaconNavigation = mBeaconsNavigationModel.getAll();
+
+        // Buscar os ultimos Beacons scaneados e salvos no BD Local
+        mBeaconNavigation = mBeaconNavigation == null ? new ArrayList<BeaconsNavigationModel>(): mBeaconNavigation;
+        adapter = new BeaconListAdapter(getActivity(), mBeaconNavigation);
+        mList = (ListView) layout.findViewById(R.id.device_list);
+        mList.setAdapter(adapter);
+
+        Log.i(TAG, "setRangingListener--onBeaconsDiscovered::" + mBeaconNavigation.toString());
+        //list.setOnItemClickListener(createOnItemClickListener());
+
+        return layout;
     }
 
     @Override
@@ -176,17 +181,31 @@ public class NavigationFragment extends Fragment {
                     public void run() {
 
                         Log.i(TAG, "setRangingListener--onBeaconsDiscovered:: beacons::" + beacons.toString());
-                        BeaconsNavigationModel mBeaconsNavigationModel = new BeaconsNavigationModel();
 
                         try {
 
                             if (beacons != null && beacons.size() > 0) {
-                                //Toast.makeText(getActivity().getApplicationContext(), "macAddress:" + beacons.get(0).getMacAddress().toString(), Toast.LENGTH_LONG).show();
 
                                 if (mBeaconsNavigationModel.beaconExistByMacAddress(beacons.get(0).getMacAddress().toString()) <= 0) {
-                                    Long returnSave = mBeaconsNavigationModel.save(beacons.get(0).getMacAddress().toString(), beacons.get(0).getRssi());
+
+                                    Long returnSave = mBeaconsNavigationModel.save(beacons.get(0).getProximityUUID().toString(),
+                                            beacons.get(0).getName(),
+                                            beacons.get(0).getMacAddress(),
+                                            beacons.get(0).getMajor(),
+                                            beacons.get(0).getMinor(),
+                                            beacons.get(0).getMeasuredPower(),
+                                            beacons.get(0).getRssi(),
+                                            "Descricao"
+                                    );
+
                                     Toast.makeText(getActivity().getApplicationContext(), "Beacon " + beacons.get(0).getMacAddress().toString() + " salvo.", Toast.LENGTH_LONG).show();
                                     Log.i(TAG, "returnSave::" + returnSave);
+
+                                    // Atulizar a listagem toda vez que houver um Beacon Novo
+                                    // Buscar os ultimos Beacons scaneados e salvos no BD Local
+                                    mBeaconNavigation = mBeaconsNavigationModel.getAll();
+                                    Log.i(TAG, "setRangingListener--onBeaconsDiscovered::" + mBeaconNavigation.toString());
+                                    adapter.replaceWith(mBeaconNavigation);
                                 } else {
                                     Log.i(TAG, "Beacon " + beacons.get(0).getMacAddress().toString() + " já esta salvo.");
                                     Toast.makeText(getActivity().getApplicationContext(), "Beacon " + beacons.get(0).getMacAddress().toString() + " já existe no banco.", Toast.LENGTH_LONG).show();
@@ -199,7 +218,7 @@ public class NavigationFragment extends Fragment {
                             e.printStackTrace();
                         }
 
-                        mListBeaconsNavigationModel = mBeaconsNavigationModel.getAll();
+                        //mListBeaconsNavigationModel = mBeaconsNavigationModel.getAll();
                         Log.i(TAG, "setRangingListener--onBeaconsDiscovered::" + beacons.toString());
                     }
                 });

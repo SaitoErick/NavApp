@@ -3,8 +3,11 @@
     android:layout_height="match_parent"
     tools:context="com.ciandt.thegarage.navapp.fragment.NavigationFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="Navigation" />
+    <ListView
+        android:id="@+id/device_list"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 </FrameLayout>
