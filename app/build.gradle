@@ -1,15 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 21
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "com.ciandt.thegarage.navapp"
         minSdkVersion 19
-        targetSdkVersion 22
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+
+        // Enabling multidex support.
+        multiDexEnabled true
+
     }
     buildTypes {
         release {
@@ -21,14 +25,16 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.1'
-    compile(name:'estimote-sdk', ext:'aar')
-    compile 'com.mcxiaoke.volley:library:1.0.+'
+    compile 'com.estimote:sdk:0.8.7@aar'
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    compile 'com.android.support:multidex:1.0.0'
+    compile files('libs/volley.jar')
 }
 
 repositories {
     mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     flatDir {
         dirs 'libs'
     }
 }
-

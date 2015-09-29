@@ -7,8 +7,6 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.ciandt.thegarage.navapp.Repository;
-import com.ciandt.thegarage.navapp.VolleyApplication;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,23 +49,24 @@ public class TimerRun {
                     if(beaconAtual != null) {
                         beaconMacAddress = new JSONObject(beaconAtual);
                     }
+
                     if(beaconAnterior != null) {
                         beaconMacAddressAnterior = new JSONObject(beaconAnterior);
                     }
+
                     if (beaconMacAddressAnterior != null) {
                         //if (beaconMacAddress.getString("macAddress").equals(beaconMacAddressAnterior.getString("macAddress"))) {
                             if (beaconMacAddress.getInt("rssi") != beaconMacAddressAnterior.getInt("rssi")) {
                                 jsonBuscar(beaconMacAddress.getString("macAddress"));
                             }
                         //}
-                    }else {
+                    } else {
                         jsonBuscar(beaconMacAddress.getString("macAddress"));
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
 
 
@@ -120,13 +119,8 @@ public class TimerRun {
                         //restJson.setText(error.toString());
                     }
                 }
-
-
         );
 
-        VolleyApplication.getInstance().getRequestQueue().add(request);
-
-
+        //VolleyApplication.getInstance().getRequestQueue().add(request);
     }
-
 }
