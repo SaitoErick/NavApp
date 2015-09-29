@@ -7,8 +7,6 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.ciandt.thegarage.navapp.Repository;
-import com.ciandt.thegarage.navapp.VolleyApplication;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -123,6 +121,6 @@ public class TimerRun {
                 }
         );
 
-        VolleyApplication.getInstance().getRequestQueue().add(request);
+        //VolleyApplication.getInstance().getRequestQueue().add(request);
     }
 }
