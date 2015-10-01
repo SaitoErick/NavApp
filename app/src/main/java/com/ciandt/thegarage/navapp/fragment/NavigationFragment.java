@@ -71,14 +71,17 @@ public class NavigationFragment extends Fragment implements
     private Repository repository;
     private TimerRun timerRun;
     private BeaconListAdapter adapter;
-    List<BeaconsNavigationModel> mBeaconNavigation;
-    ListView mList;
-    BeaconsNavigationModel mBeaconsNavigationModel;
+    private List<BeaconsNavigationModel> mBeaconNavigation;
+    private ListView mList;
+    private BeaconsNavigationModel mBeaconsNavigationModel;
 
     TextView mTextMesage;
     ProgressBar mProgressBar;
     boolean mIsRunning;
     public String mMacAdressBeacon = null;
+
+    String mMessageBeacon;
+    Beacon mBeacon = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -204,67 +207,35 @@ public class NavigationFragment extends Fragment implements
                         Log.i(TAG, "setRangingListener--onBeaconsDiscovered:: beacons::" + beacons.toString());
 
                         try {
-
                             if (beacons != null && beacons.size() > 0) {
-                                if (mBeaconsNavigationModel.beaconExistByMacAddress(beacons.get(0).getMacAddress().toString()) <= 0) {
+                                //if (mBeaconsNavigationModel.beaconExistByMacAddress(beacons.get(0).getMacAddress().toString()) <= 0) {
+                                Toast.makeText(getActivity().getApplicationContext(), "Encontrado Beacon!" + beacons.get(0).getMacAddress(), Toast.LENGTH_LONG).show();
+                                Log.i(TAG, "Encontrado Beacon!" + beacons.get(0).getMacAddress());
 
-                                    //mMacAdressBeacon = beacons.get(0).getMacAddress().toString();
-                                    //mBeaconManager.stopRanging(ALL_ESTIMOTE_BEACONS_REGION);
-                                    //mBeaconManager.disconnect();
+                                startRequestInfosBeacon(beacons.get(0));
+                                mBeaconManager.stopRanging(ALL_ESTIMOTE_BEACONS_REGION);
 
-                                    //BEGIN TO DO REFACTOR
-
-                                    Long returnSave = mBeaconsNavigationModel.save(beacons.get(0).getProximityUUID().toString(),
-                                            beacons.get(0).getName(),
-                                            beacons.get(0).getMacAddress(),
-                                            beacons.get(0).getMajor(),
-                                            beacons.get(0).getMinor(),
-                                            beacons.get(0).getMeasuredPower(),
-                                            beacons.get(0).getRssi(),
-                                            "Descricao Beacon"
-                                    );
-
-                                    Toast.makeText(getActivity().getApplicationContext(), "Beacon " + beacons.get(0).getMacAddress().toString() + " salvo.", Toast.LENGTH_LONG).show();
-                                    Log.i(TAG, "returnSave::" + returnSave);
-
-                                    // Atulizar a listagem toda vez que houver um Beacon Novo
-                                    // Buscar os ultimos Beacons scaneados e salvos no BD Local
-                                    mBeaconNavigation = mBeaconsNavigationModel.getAll();
-                                    Log.i(TAG, "setRangingListener--onBeaconsDiscovered::" + mBeaconNavigation.toString());
-                                    adapter.replaceWith(mBeaconNavigation);
-
-
-                                    //END TO DO REFACTOR
-
-                                } else {
-                                    Log.i(TAG, "Beacon " + beacons.get(0).getMacAddress().toString() + " já esta salvo.");
-                                    Toast.makeText(getActivity().getApplicationContext(), "Beacon " + beacons.get(0).getMacAddress().toString() + " já existe no banco.", Toast.LENGTH_LONG).show();
-                                }
                             } else {
                                 Toast.makeText(getActivity().getApplicationContext(), "Não foi encontrado nenhum Beacon próximo.", Toast.LENGTH_LONG).show();
+                                Log.i(TAG, "Não foi encontrado nenhum Beacon próximo.");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        mBeaconNavigation = mBeaconsNavigationModel.getAll();
-                        Log.i(TAG, "setRangingListener--onBeaconsDiscovered::" + mBeaconNavigation.toString());
                     }
                 });
-
-                /*if (mMacAdressBeacon != null) {
-                    startRequestInfosBeacon(mMacAdressBeacon);
-                }*/
             }
         });
     }
 
-    public void startRequestInfosBeacon(String macAddress) {
+    public void startRequestInfosBeacon(Beacon beacon) {
 
         mIsRunning = true;
         showProgress(true);
+        mBeacon = beacon;
 
         RequestQueue queue = VolleySingleton.getInstance(getActivity()).getRequestQueue();
-        String urlRequest = Constants.BEACONS_URL_WEBSERVICE + macAddress;
+        String urlRequest = Constants.BEACONS_URL_WEBSERVICE + beacon.getMacAddress();
         JsonObjectRequest request =
                 new JsonObjectRequest(
                         Request.Method.GET, // Requisição via HTTP_GET
@@ -273,42 +244,45 @@ public class NavigationFragment extends Fragment implements
                         this, // Response.Listener
                         this // Response.ErrorListener
                 );
-
         queue.add(request);
     }
 
     @Override
     public void onResponse(JSONObject jsonObject) {
-        mIsRunning = false;
-        // showProgress(false);
 
-        // Salvar os dados do Beacons no bd
-        // e Reload na Listagem
         try {
 
-            /*Long returnSave = mBeaconsNavigationModel.save(beacons.get(0).getProximityUUID().toString(),
-                    beacons.get(0).getName(),
-                    beacons.get(0).getMacAddress(),
-                    beacons.get(0).getMajor(),
-                    beacons.get(0).getMinor(),
-                    beacons.get(0).getMeasuredPower(),
-                    beacons.get(0).getRssi(),
-                    "Descricao"
-            );
+            mIsRunning = false;
 
-            Toast.makeText(getActivity().getApplicationContext(), "Beacon " + beacons.get(0).getMacAddress().toString() + " salvo.", Toast.LENGTH_LONG).show();
+            JSONObject jsonResult = jsonObject.getJSONObject("payload");
+            String mDescriptionBeacon = jsonResult.getString("description");
+            mMessageBeacon = jsonResult.getString("message");
+
+            Toast.makeText(getActivity().getApplicationContext(), "MacAddress-" + mBeacon.getMacAddress() + "-mDescriptionBeacon-" + mDescriptionBeacon, Toast.LENGTH_LONG).show();
+            Log.i(TAG, "mMessageBeacon=" + mMessageBeacon);
+            Log.i(TAG, "mDescriptionBeacon=" + mDescriptionBeacon);
+            Log.i(TAG, "getMacAddress=" + mBeacon.getMacAddress());
+
+            Long returnSave = mBeaconsNavigationModel.save(mBeacon.getProximityUUID().toString(),
+                    mBeacon.getName(),
+                    mBeacon.getMacAddress(),
+                    mBeacon.getMajor(),
+                    mBeacon.getMinor(),
+                    mBeacon.getMeasuredPower(),
+                    mBeacon.getRssi(),
+                    mDescriptionBeacon);
+
             Log.i(TAG, "returnSave::" + returnSave);
 
-            // Atulizar a listagem toda vez que houver um Beacon Novo
-            // Buscar os ultimos Beacons scaneados e salvos no BD Local
             mBeaconNavigation = mBeaconsNavigationModel.getAll();
             Log.i(TAG, "setRangingListener--onBeaconsDiscovered::" + mBeaconNavigation.toString());
-            adapter.replaceWith(mBeaconNavigation);*/
+            adapter.replaceWith(mBeaconNavigation);
 
             connectToServiceScannBeacon();
             showProgress(false);
 
-        } catch (Exception e) {
+        } catch (JSONException e) {
+            Toast.makeText(getActivity().getApplicationContext(), "Falha na consulta do serviço do Beacon.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
@@ -318,6 +292,7 @@ public class NavigationFragment extends Fragment implements
         mIsRunning = false;
         showProgress(false);
         mTextMesage.setText("Falha ao obter os dados do Beacon");
+        Toast.makeText(getActivity().getApplicationContext(), "Falha ao obter os dados do Beacon", Toast.LENGTH_LONG).show();
     }
 
     private void showProgress(boolean show) {
