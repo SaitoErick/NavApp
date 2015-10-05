@@ -165,7 +165,9 @@ public class NavigationFragment extends Fragment implements
             mDescriptionBeacon = jsonResult.getString("description");
             mMessageBeacon = jsonResult.getString("message");
 
-            Toast.makeText(getActivity().getApplicationContext(), "MacAddress-" + mBeacon.getMacAddress() + "-mDescriptionBeacon-" + mDescriptionBeacon, Toast.LENGTH_LONG).show();
+            //Toast.makeText(getActivity().getApplicationContext(), "MacAddress-" + mBeacon.getMacAddress() + "-mDescriptionBeacon-" + mDescriptionBeacon, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), "Local: " + mDescriptionBeacon, Toast.LENGTH_LONG).show();
+
             Log.i(TAG, "mMessageBeacon=" + mMessageBeacon);
             Log.i(TAG, "mDescriptionBeacon=" + mDescriptionBeacon);
             Log.i(TAG, "getMacAddress=" + mBeacon.getMacAddress());
@@ -180,7 +182,8 @@ public class NavigationFragment extends Fragment implements
                     mBeacon.getMinor(),
                     mBeacon.getMeasuredPower(),
                     mBeacon.getRssi(),
-                    mDescriptionBeacon);
+                    mDescriptionBeacon,
+                    mMessageBeacon);
 
             Log.i(TAG, "returnSave::" + returnSave);
 
@@ -235,7 +238,7 @@ public class NavigationFragment extends Fragment implements
                         try {
                             if (beacons != null && beacons.size() > 0) {
                                 //if (mBeaconsNavigationModel.beaconExistByMacAddress(beacons.get(0).getMacAddress().toString()) <= 0) {
-                                Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_beacons_encontrados + beacons.get(0).getMacAddress(), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_beacons_encontrados + beacons.get(0).getMacAddress(), Toast.LENGTH_LONG).show();
                                 Log.i(TAG, R.string.mensagem_beacons_encontrados + beacons.get(0).getMacAddress());
 
                                 requestInfosBeacon(beacons.get(0));

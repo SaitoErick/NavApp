@@ -39,6 +39,13 @@ public class BeaconsNavigationModel extends Model {
     @Column(name = "describeBeacon")
     private String describeBeacon;
 
+    @Column(name = "messageBeacon")
+    private String messageBeacon;
+
+    public String getMessageBeacon() {
+        return messageBeacon;
+    }
+
     public String getProximityUUID() {
         return proximityUUID;
     }
@@ -75,7 +82,7 @@ public class BeaconsNavigationModel extends Model {
         super();
     }
 
-    public Long save(String proximityUUID, String name, String macAddress, int major, int minor, int measuredPower, int rssi, String describeBeacon) {
+    public Long save(String proximityUUID, String name, String macAddress, int major, int minor, int measuredPower, int rssi, String describeBeacon, String messageBeacon) {
 
         this.proximityUUID = proximityUUID;
         this.name = name;
@@ -85,6 +92,7 @@ public class BeaconsNavigationModel extends Model {
         this.measuredPower = measuredPower;
         this.rssi = rssi;
         this.describeBeacon = describeBeacon;
+        this.messageBeacon = messageBeacon;
 
         return super.save();
     }
@@ -92,7 +100,7 @@ public class BeaconsNavigationModel extends Model {
     public static List<BeaconsNavigationModel> getAll() {
         return new Select()
                 .from(BeaconsNavigationModel.class)
-                .orderBy("rssi ASC")
+                .orderBy("Id DESC")
                 .limit(7)
                 .execute();
     }

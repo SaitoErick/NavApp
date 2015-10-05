@@ -7,7 +7,7 @@
     <string name="mensagem_app_nao_ira_funcionar_sem_permissao_ao_bluetooth">O aplicativo não irá funcionar, pois não foi dada a permissão de habilitar o Bluetooth.</string>
     <string name="mensagem_falha_servico_beacon">Falha na consulta do serviço do Beacon.</string>
     <string name="mensagem_falha_start_scann_beacon">Não foi possível iniciar o scann de Beacon</string>
-    <string name="mensagem_beacons_encontrados">Beacon(s) encontrados</string>
-    <string name="mensagem_beacons_nao_encontrados">Não foi encontrado nenhum Beacon próximo.</string>
+    <string name="mensagem_beacons_encontrados">Beacon próximo</string>
+    <string name="mensagem_beacons_nao_encontrados">Nenhum Beacon próximo.</string>
     <string name="mensagem_baixando_infos_beacon">Baixando informações do Beacon...</string>
 </resources>
