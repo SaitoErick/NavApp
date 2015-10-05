@@ -93,6 +93,7 @@ public class BeaconsNavigationModel extends Model {
         return new Select()
                 .from(BeaconsNavigationModel.class)
                 .orderBy("rssi ASC")
+                .limit(7)
                 .execute();
     }
 
