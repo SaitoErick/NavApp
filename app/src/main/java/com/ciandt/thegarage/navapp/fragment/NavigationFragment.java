@@ -121,16 +121,15 @@ public class NavigationFragment extends Fragment implements
     }
 
     @Override
+    public void onPause(){
+        super.onPause();
+        Log.i(TAG, "onPause");
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         Log.i(TAG, "onStop");
-
-        try {
-            //Stop busca de Beacon
-            mBeaconManager.stopRanging(ALL_ESTIMOTE_BEACONS_REGION);
-        } catch (RemoteException e) {
-            Log.i(TAG, String.valueOf(R.string.mensagem_erro_no_stop_do_scann_de_beacons), e);
-        }
     }
 
     @Override
