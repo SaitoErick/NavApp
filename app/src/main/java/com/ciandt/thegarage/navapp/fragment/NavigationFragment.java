@@ -204,6 +204,7 @@ public class NavigationFragment extends Fragment implements
         showProgress(false);
         mTextMesage.setText(R.string.mensagem_falha_servico_beacon);
         Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_falha_servico_beacon, Toast.LENGTH_LONG).show();
+        connectToServiceScannBeacon();
     }
 
     private void connectToServiceScannBeacon() {
@@ -242,12 +243,12 @@ public class NavigationFragment extends Fragment implements
                                 BeaconsNavigationModel mBeaconsNavigationModel = new BeaconsNavigationModel();
 
                                 // Verificar se o Beacon scaneado é o ultimo já cadastrado
-                                if(mBeaconsNavigationModel.beaconScannIsLastSave(beacons.get(0).getMacAddress().toString()) < 1){
+                                //if(mBeaconsNavigationModel.beaconScannIsLastSave(beacons.get(0).getMacAddress().toString()) < 1){
                                     requestInfosBeacon(beacons.get(0));
                                     mBeaconManager.stopRanging(ALL_ESTIMOTE_BEACONS_REGION);
-                                } else {
-                                    Log.i(TAG, beacons.get(0).getMacAddress().toString() + " Já existe");
-                                }
+                                //} else {
+                                //    Log.i(TAG, beacons.get(0).getMacAddress().toString() + " Já existe");
+                                //}
 
                             } else {
                                 Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_beacons_nao_encontrados, Toast.LENGTH_LONG).show();
