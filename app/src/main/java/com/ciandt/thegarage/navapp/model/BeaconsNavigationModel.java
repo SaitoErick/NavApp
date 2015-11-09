@@ -105,10 +105,12 @@ public class BeaconsNavigationModel extends Model {
                 .execute();
     }
 
-    public Integer beaconExistByMacAddress(String mMacAddress) {
+    public Integer beaconScannIsLastSave(String mMacAddress) {
         List<BeaconsNavigationModel> ListBeaconsNavigationModel = new Select()
                 .from(BeaconsNavigationModel.class)
                 .where("macAddress = ?", mMacAddress)
+                .orderBy("Id DESC")
+                .limit(1)
                 .execute();
 
         return ListBeaconsNavigationModel.size();

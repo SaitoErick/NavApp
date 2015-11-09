@@ -121,16 +121,15 @@ public class NavigationFragment extends Fragment implements
     }
 
     @Override
+    public void onPause(){
+        super.onPause();
+        Log.i(TAG, "onPause");
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         Log.i(TAG, "onStop");
-
-        try {
-            //Stop busca de Beacon
-            mBeaconManager.stopRanging(ALL_ESTIMOTE_BEACONS_REGION);
-        } catch (RemoteException e) {
-            Log.i(TAG, String.valueOf(R.string.mensagem_erro_no_stop_do_scann_de_beacons), e);
-        }
     }
 
     @Override
@@ -205,6 +204,7 @@ public class NavigationFragment extends Fragment implements
         showProgress(false);
         mTextMesage.setText(R.string.mensagem_falha_servico_beacon);
         Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_falha_servico_beacon, Toast.LENGTH_LONG).show();
+        connectToServiceScannBeacon();
     }
 
     private void connectToServiceScannBeacon() {
@@ -237,12 +237,18 @@ public class NavigationFragment extends Fragment implements
 
                         try {
                             if (beacons != null && beacons.size() > 0) {
-                                //if (mBeaconsNavigationModel.beaconExistByMacAddress(beacons.get(0).getMacAddress().toString()) <= 0) {
                                 //Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_beacons_encontrados + beacons.get(0).getMacAddress(), Toast.LENGTH_LONG).show();
                                 Log.i(TAG, R.string.mensagem_beacons_encontrados + beacons.get(0).getMacAddress());
 
-                                requestInfosBeacon(beacons.get(0));
-                                mBeaconManager.stopRanging(ALL_ESTIMOTE_BEACONS_REGION);
+                                BeaconsNavigationModel mBeaconsNavigationModel = new BeaconsNavigationModel();
+
+                                // Verificar se o Beacon scaneado é o ultimo já cadastrado
+                                //if(mBeaconsNavigationModel.beaconScannIsLastSave(beacons.get(0).getMacAddress().toString()) < 1){
+                                    requestInfosBeacon(beacons.get(0));
+                                    mBeaconManager.stopRanging(ALL_ESTIMOTE_BEACONS_REGION);
+                                //} else {
+                                //    Log.i(TAG, beacons.get(0).getMacAddress().toString() + " Já existe");
+                                //}
 
                             } else {
                                 Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_beacons_nao_encontrados, Toast.LENGTH_LONG).show();
