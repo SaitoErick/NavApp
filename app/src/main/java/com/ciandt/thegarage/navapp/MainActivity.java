@@ -1,46 +1,17 @@
 package com.ciandt.thegarage.navapp;
 
-import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.accessibility.AccessibilityEvent;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ciandt.thegarage.navapp.adapter.MainPagerAdapter;
 import com.ciandt.thegarage.navapp.view.SlidingTabLayout;
-import com.estimote.sdk.Beacon;
-import com.estimote.sdk.BeaconManager;
-import com.estimote.sdk.Region;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
-    private Context mContext;
     private MainPagerAdapter mMainPagerAdapter;
 
     @Override

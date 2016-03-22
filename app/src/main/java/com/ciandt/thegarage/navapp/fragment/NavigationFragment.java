@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -57,8 +56,8 @@ public class NavigationFragment extends Fragment implements
     private String mMessageBeacon;
     private String mDescriptionBeacon;
 
-    private SensorManager sensorMan;
-    private Sensor accelerometer;
+    private SensorManager mSensorMan;
+    private Sensor mAccelerometer;
 
     private float[] mGravity;
     private double mAccel;
@@ -107,8 +106,8 @@ public class NavigationFragment extends Fragment implements
         layout.setEnabled(false);
 
 
-        sensorMan = (SensorManager) getActivity().getSystemService(getActivity().SENSOR_SERVICE);
-        accelerometer = sensorMan.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mSensorMan = (SensorManager) getActivity().getSystemService(getActivity().SENSOR_SERVICE);
+        mAccelerometer = mSensorMan.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mAccel = 0.00f;
         mAccelCurrent = SensorManager.GRAVITY_EARTH;
         mAccelLast = SensorManager.GRAVITY_EARTH;
@@ -144,7 +143,7 @@ public class NavigationFragment extends Fragment implements
         Log.i(TAG, "onResume::" + mListBeaconNavigationModel.toString());
         adapter.replaceWith(mListBeaconNavigationModel);
 
-        sensorMan.registerListener(this, accelerometer,
+        mSensorMan.registerListener(this, mAccelerometer,
                 SensorManager.SENSOR_DELAY_UI);
     }
 
@@ -153,7 +152,7 @@ public class NavigationFragment extends Fragment implements
         super.onPause();
         Log.i(TAG, "onPause");
 
-        sensorMan.unregisterListener(this);
+        mSensorMan.unregisterListener(this);
     }
 
     @Override
@@ -323,7 +322,7 @@ public class NavigationFragment extends Fragment implements
             // motion you want to detect
 
 
-            if (mAccel > 1.5) {
+            if (mAccel > 1.0) {
                 Log.i(TAG, String.valueOf("Scanning : " + scanning));
 
                 if (!scanning) {
