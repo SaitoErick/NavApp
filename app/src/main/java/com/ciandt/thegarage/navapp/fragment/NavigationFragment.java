@@ -3,6 +3,10 @@ package com.ciandt.thegarage.navapp.fragment;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
@@ -41,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * A simple {@link Fragment} subclass.
  */
 public class NavigationFragment extends Fragment implements
-        Response.Listener<JSONObject>, Response.ErrorListener {
+        Response.Listener<JSONObject>, Response.ErrorListener, SensorEventListener {
 
     private String TAG = NavigationFragment.class.getSimpleName();
     private static final int REQUEST_ENABLE_BT = 1234;
@@ -53,9 +57,18 @@ public class NavigationFragment extends Fragment implements
     private String mMessageBeacon;
     private String mDescriptionBeacon;
 
+    private SensorManager sensorMan;
+    private Sensor accelerometer;
+
+    private float[] mGravity;
+    private double mAccel;
+    private double mAccelCurrent;
+    private double mAccelLast;
+
     private BeaconListAdapter adapter;
     private List<BeaconsNavigationModel> mListBeaconNavigationModel;
     private ListView mList;
+
 
     private ProgressBar mProgressBar;
 
@@ -78,6 +91,13 @@ public class NavigationFragment extends Fragment implements
         mListBeaconNavigationModel = mBeaconsNavigationModel.getAll();
         mListBeaconNavigationModel = mListBeaconNavigationModel == null ? new ArrayList<BeaconsNavigationModel>() : mListBeaconNavigationModel;
 
+        mListBeaconNavigationModel = mBeaconsNavigationModel.getAll();
+        mListBeaconNavigationModel = mListBeaconNavigationModel == null ? new ArrayList<BeaconsNavigationModel>() : mListBeaconNavigationModel;
+
+        adapter = new BeaconListAdapter(getActivity(), mListBeaconNavigationModel);
+        mList = (ListView) layout.findViewById(R.id.device_list);
+        mList.setAdapter(adapter);
+
         adapter = new BeaconListAdapter(getActivity(), mListBeaconNavigationModel);
         mList = (ListView) layout.findViewById(R.id.device_list);
         mList.setAdapter(adapter);
@@ -85,6 +105,13 @@ public class NavigationFragment extends Fragment implements
 
         // Disable the touch to prevent the wrong speech
         layout.setEnabled(false);
+
+
+        sensorMan = (SensorManager) getActivity().getSystemService(getActivity().SENSOR_SERVICE);
+        accelerometer = sensorMan.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mAccel = 0.00f;
+        mAccelCurrent = SensorManager.GRAVITY_EARTH;
+        mAccelLast = SensorManager.GRAVITY_EARTH;
 
         return layout;
     }
@@ -116,12 +143,17 @@ public class NavigationFragment extends Fragment implements
         mListBeaconNavigationModel = mBeaconsNavigationModel.getAll();
         Log.i(TAG, "onResume::" + mListBeaconNavigationModel.toString());
         adapter.replaceWith(mListBeaconNavigationModel);
+
+        sensorMan.registerListener(this, accelerometer,
+                SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         Log.i(TAG, "onPause");
+
+        sensorMan.unregisterListener(this);
     }
 
     @Override
@@ -185,12 +217,17 @@ public class NavigationFragment extends Fragment implements
             Log.i(TAG, "setRangingListener--onBeaconsDiscovered::" + mListBeaconNavigationModel.toString());
             adapter.replaceWith(mListBeaconNavigationModel);
 
-            connectToServiceScannBeacon();
+            scanning = false;
+            //connectToServiceScannBeacon();
             showProgress(false);
         } catch (JSONException e) {
             showProgress(false);
-            connectToServiceScannBeacon();
+
+            scanning = false;
+            //connectToServiceScannBeacon();
         }
+
+        Log.i(TAG, String.valueOf("Scanning - FIM"));
     }
 
     @Override
@@ -199,10 +236,15 @@ public class NavigationFragment extends Fragment implements
         Toast.makeText(getActivity().getApplicationContext(),
                 R.string.mensagem_falha_servico_beacon, Toast.LENGTH_LONG).show();
         connectToServiceScannBeacon();
+        Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_falha_servico_beacon, Toast.LENGTH_LONG).show();
     }
+
+
+    private boolean scanning = true;
 
     private void connectToServiceScannBeacon() {
         Collections.<Beacon>emptyList();
+
         mBeaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
@@ -261,5 +303,40 @@ public class NavigationFragment extends Fragment implements
 
     private void showProgress(boolean show) {
         mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            mGravity = event.values.clone();
+            // Shake detection
+            double x = mGravity[0];
+            double y = mGravity[1];
+            double z = mGravity[2];
+            mAccelLast = mAccelCurrent;
+            mAccelCurrent = Math.sqrt(x * x + y * y + z * z);
+            ;
+            double delta = mAccelCurrent - mAccelLast;
+            mAccel = mAccel * 0.9f + delta;
+            // Make this higher or lower according to how much
+            // motion you want to detect
+
+
+            if (mAccel > 1.5) {
+                Log.i(TAG, String.valueOf("Scanning : " + scanning));
+
+                if (!scanning) {
+                    Log.i(TAG, String.valueOf("Scanning - Inicio"));
+                    scanning = true;
+                    connectToServiceScannBeacon();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }
