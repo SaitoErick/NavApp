@@ -48,21 +48,20 @@ public class NavigationFragment extends Fragment implements
     private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region("rid", null, null, null);
 
     private BeaconManager mBeaconManager;
-        private BeaconsNavigationModel mBeaconsNavigationModel;
-        private Beacon mBeacon;
-        private String mMessageBeacon;
-        private String mDescriptionBeacon;
+    private BeaconsNavigationModel mBeaconsNavigationModel;
+    private Beacon mBeacon;
+    private String mMessageBeacon;
+    private String mDescriptionBeacon;
 
-        private BeaconListAdapter adapter;
-        private List<BeaconsNavigationModel> mListBeaconNavigationModel;
-        private ListView mList;
+    private BeaconListAdapter adapter;
+    private List<BeaconsNavigationModel> mListBeaconNavigationModel;
+    private ListView mList;
 
-        private TextView mTextMesage;
-        private ProgressBar mProgressBar;
+    private ProgressBar mProgressBar;
 
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
 
         mBeaconManager = new BeaconManager(getActivity().getApplicationContext());
@@ -70,21 +69,22 @@ public class NavigationFragment extends Fragment implements
         callBackScannBeacons();
     }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            Log.i(TAG, "onCreateView");
-            View layout = inflater.inflate(R.layout.fragment_navigation, container, false);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView");
+        View layout = inflater.inflate(R.layout.fragment_navigation, container, false);
 
-            BeaconsNavigationModel mBeaconsNavigationModel = new BeaconsNavigationModel();
-            mListBeaconNavigationModel = mBeaconsNavigationModel.getAll();
-            mListBeaconNavigationModel = mListBeaconNavigationModel == null ? new ArrayList<BeaconsNavigationModel>() : mListBeaconNavigationModel;
+        BeaconsNavigationModel mBeaconsNavigationModel = new BeaconsNavigationModel();
+        mListBeaconNavigationModel = mBeaconsNavigationModel.getAll();
+        mListBeaconNavigationModel = mListBeaconNavigationModel == null ? new ArrayList<BeaconsNavigationModel>() : mListBeaconNavigationModel;
 
-            adapter = new BeaconListAdapter(getActivity(), mListBeaconNavigationModel);
-            mList = (ListView) layout.findViewById(R.id.device_list);
-            mList.setAdapter(adapter);
-
+        adapter = new BeaconListAdapter(getActivity(), mListBeaconNavigationModel);
+        mList = (ListView) layout.findViewById(R.id.device_list);
+        mList.setAdapter(adapter);
         mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
-        mTextMesage = (TextView) layout.findViewById(android.R.id.empty);
+
+        // Disable the touch to prevent the wrong speech
+        layout.setEnabled(false);
 
         return layout;
     }
@@ -94,13 +94,11 @@ public class NavigationFragment extends Fragment implements
         super.onStart();
         Log.i(TAG, "onStart");
 
-        //Verificando se o Device tem Bluetooth
         if (!mBeaconManager.hasBluetooth()) {
             Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_celular_nao_tem_bluetooth, Toast.LENGTH_LONG).show();
             return;
         }
 
-        //Verificando se o Bluetooth está habilitando
         if (!mBeaconManager.isBluetoothEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
@@ -163,7 +161,6 @@ public class NavigationFragment extends Fragment implements
             mDescriptionBeacon = payload.getString("description");
             mMessageBeacon = payload.getString("message");
 
-            //Toast.makeText(getActivity().getApplicationContext(), "MacAddress-" + mBeacon.getMacAddress() + "-mDescriptionBeacon-" + mDescriptionBeacon, Toast.LENGTH_LONG).show();
             Toast.makeText(getActivity().getApplicationContext(), "Local: " + mDescriptionBeacon, Toast.LENGTH_LONG).show();
 
             Log.i(TAG, "mMessageBeacon=" + mMessageBeacon);
@@ -171,7 +168,6 @@ public class NavigationFragment extends Fragment implements
             Log.i(TAG, "getMacAddress=" + mBeacon.getMacAddress());
 
             mBeaconsNavigationModel = new BeaconsNavigationModel();
-            //mListBeaconNavigationModel = mBeaconsNavigationModel.getAll();
 
             Long returnSave = mBeaconsNavigationModel.save(mBeacon.getProximityUUID().toString(),
                     mBeacon.getName(),
@@ -200,9 +196,8 @@ public class NavigationFragment extends Fragment implements
     @Override
     public void onErrorResponse(VolleyError volleyError) {
         showProgress(false);
-        mTextMesage.setText(R.string.mensagem_falha_servico_beacon);
-        mTextMesage.setText(R.string.mensagem_falha_servico_beacon);
-        Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_falha_servico_beacon, Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity().getApplicationContext(),
+                R.string.mensagem_falha_servico_beacon, Toast.LENGTH_LONG).show();
         connectToServiceScannBeacon();
     }
 
@@ -215,7 +210,8 @@ public class NavigationFragment extends Fragment implements
                     mBeaconManager.startRanging(ALL_ESTIMOTE_BEACONS_REGION);
                     Log.i(TAG, "startRanging");
                 } catch (RemoteException e) {
-                    Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_falha_start_scann_beacon, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            R.string.mensagem_falha_start_scann_beacon, Toast.LENGTH_LONG).show();
                     Log.i(TAG, "Cannot start ranging", e);
                 }
             }
@@ -229,22 +225,10 @@ public class NavigationFragment extends Fragment implements
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.i(TAG, "setRangingListener--onBeaconsDiscovered:: beacons::" + beacons.toString());
                         try {
                             if (beacons != null && beacons.size() > 0) {
-                                //Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_beacons_encontrados + beacons.get(0).getMacAddress(), Toast.LENGTH_LONG).show();
-                                Log.i(TAG, R.string.mensagem_beacons_encontrados + beacons.get(0).getMacAddress());
-
-                                BeaconsNavigationModel mBeaconsNavigationModel = new BeaconsNavigationModel();
-
-                                // Verificar se o Beacon scaneado é o ultimo já cadastrado
-                                //if(mBeaconsNavigationModel.beaconScannIsLastSave(beacons.get(0).getMacAddress().toString()) < 1){
                                 requestInfosBeacon(beacons.get(0));
                                 mBeaconManager.stopRanging(ALL_ESTIMOTE_BEACONS_REGION);
-                                //} else {
-                                //    Log.i(TAG, beacons.get(0).getMacAddress().toString() + " Já existe");
-                                //}
-
                             } else {
                                 Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_beacons_nao_encontrados, Toast.LENGTH_LONG).show();
                                 Log.i(TAG, String.valueOf(R.string.mensagem_beacons_nao_encontrados));
@@ -266,8 +250,7 @@ public class NavigationFragment extends Fragment implements
         RequestQueue queue = VolleySingleton.getInstance(getActivity()).getRequestQueue();
         String urlRequest = Constants.BEACONS_URL_WEBSERVICE + beacon.getMacAddress();
         JsonObjectRequest request =
-                new JsonObjectRequest(
-                        Request.Method.GET, // Requisição via HTTP_GET
+                new JsonObjectRequest(Request.Method.GET, // Requisição via HTTP_GET
                         urlRequest, // url da requisição
                         null, // JSONObject a ser enviado via POST
                         this, // Response.Listener
@@ -277,12 +260,6 @@ public class NavigationFragment extends Fragment implements
     }
 
     private void showProgress(boolean show) {
-
-        if (show == true) {
-            mTextMesage.setText(R.string.mensagem_baixando_infos_beacon);
-        }
-
-        mTextMesage.setVisibility(show ? View.VISIBLE : View.GONE);
         mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 }

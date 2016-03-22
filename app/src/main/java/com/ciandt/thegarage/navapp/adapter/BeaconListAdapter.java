@@ -22,6 +22,7 @@ import java.util.List;
  *
  * @author wiktor@estimote.com (Wiktor Gworek)
  */
+
 public class BeaconListAdapter extends BaseAdapter {
 
     private List<BeaconsNavigationModel> beacons;
@@ -63,11 +64,6 @@ public class BeaconListAdapter extends BaseAdapter {
     private void bind(BeaconsNavigationModel beacon, View view) {
         ViewHolder holder = (ViewHolder) view.getTag();
         holder.beaconTextView.setText(String.format("Local: %s", beacon.getDescribeBeacon()));
-    /*holder.macTextView.setText(String.format("MAC: %s (%.2fm)", beacon.getMacAddress(), Utils.computeAccuracy(beacon.getRssi(), beacon.getMeasuredPower())));
-    holder.majorTextView.setText("Major: " + beacon.getMajor());
-    holder.minorTextView.setText("Minor: " + beacon.getMinor());
-    holder.measuredPowerTextView.setText("MPower: " + beacon.getMeasuredPower());
-    holder.rssiTextView.setText("RSSI: " + beacon.getDescribeBeacon());*/
     }
 
     private View inflateIfRequired(View view, int position, ViewGroup parent) {
@@ -80,21 +76,9 @@ public class BeaconListAdapter extends BaseAdapter {
 
     static class ViewHolder {
         final TextView beaconTextView;
-    /*final TextView macTextView;
-    final TextView majorTextView;
-    final TextView minorTextView;
-    final TextView measuredPowerTextView;
-    final TextView rssiTextView;*/
 
         ViewHolder(View view) {
-
             beaconTextView = (TextView) view.findViewWithTag("beacon");
-
-      /*macTextView = (TextView) view.findViewWithTag("mac");
-      majorTextView = (TextView) view.findViewWithTag("major");
-      minorTextView = (TextView) view.findViewWithTag("minor");
-      measuredPowerTextView = (TextView) view.findViewWithTag("mpower");
-      rssiTextView = (TextView) view.findViewWithTag("rssi");*/
         }
     }
 }

@@ -31,7 +31,6 @@ public class DiscoveryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_discovery, container, false);
     }
 

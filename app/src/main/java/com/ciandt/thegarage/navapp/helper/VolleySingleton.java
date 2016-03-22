@@ -32,7 +32,7 @@ public class VolleySingleton {
 
     public RequestQueue getRequestQueue(){ return this.mRequestQueue; }
 
-    public ImageLoader getmImageLoader(){ return this.mImageLoader; }
+    public ImageLoader getImageLoader(){ return this.mImageLoader; }
 
     public class BitmapCache extends LruCache implements ImageLoader.ImageCache {
 
