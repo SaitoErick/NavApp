@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import com.ciandt.thegarage.navapp.R;
 import com.ciandt.thegarage.navapp.fragment.DiscoveryFragment;
 import com.ciandt.thegarage.navapp.fragment.HelpUsersFragment;
+import com.ciandt.thegarage.navapp.fragment.HistoricFragment;
 import com.ciandt.thegarage.navapp.fragment.NavigationFragment;
 
 /**
