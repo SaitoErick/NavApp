@@ -77,7 +77,7 @@ public class NavigationFragment extends Fragment implements SensorEventListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
-        View layout = inflater.inflate(R.layout.fragment_historic, container, false);
+        View layout = inflater.inflate(R.layout.fragment_navigation, container, false);
 
         BeaconsNavigationModel mBeaconsNavigationModel = new BeaconsNavigationModel();
         mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
