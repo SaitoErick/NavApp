@@ -1,46 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.ciandt.thegarage.navapp.fragment.NavigationFragment">
 
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <FrameLayout
-            android:id="@+id/historicFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.4"
-            android:background="@android:color/white"
-            android:orientation="horizontal">
-        </FrameLayout>
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:visibility="gone"/>
-
-    </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/historicButton"
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        app:elevation="5dp"
-        android:contentDescription="Histórico"
-        app:backgroundTint="@color/color_primary_dark"
-        android:src="@drawable/ic_history_white_48dp"
-        app:layout_anchor="@id/historicFragment"
-        app:layout_anchorGravity="bottom|right|end"/>
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>

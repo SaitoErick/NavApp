@@ -5,9 +5,16 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
 
+import com.ciandt.thegarage.navapp.adapter.BeaconListAdapter;
 import com.ciandt.thegarage.navapp.adapter.MainPagerAdapter;
+import com.ciandt.thegarage.navapp.model.BeaconsNavigationModel;
 import com.ciandt.thegarage.navapp.view.SlidingTabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +43,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        slidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                BeaconListAdapter adapter;
+                ListView mList;
+                List<BeaconsNavigationModel> mListBeaconNavigationModel;
+
+                BeaconsNavigationModel mBeaconsNavigationModel = new BeaconsNavigationModel();
+                mListBeaconNavigationModel = mBeaconsNavigationModel.getAll();
+                mListBeaconNavigationModel = mListBeaconNavigationModel == null ? new ArrayList<BeaconsNavigationModel>() : mListBeaconNavigationModel;
+
+                mListBeaconNavigationModel = mBeaconsNavigationModel.getAll();
+                mListBeaconNavigationModel = mListBeaconNavigationModel == null ? new ArrayList<BeaconsNavigationModel>() : mListBeaconNavigationModel;
+
+                adapter = new BeaconListAdapter(MainActivity.this, mListBeaconNavigationModel);
+                mList = (ListView) MainActivity.this.findViewById(R.id.device_list);
+                mList.setAdapter(adapter);
+
+                adapter = new BeaconListAdapter(MainActivity.this, mListBeaconNavigationModel);
+                mList = (ListView) MainActivity.this.findViewById(R.id.device_list);
+                mList.setAdapter(adapter);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         slidingTabLayout.setViewPager(mViewPager);
     }
 

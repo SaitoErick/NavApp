@@ -32,8 +32,6 @@ public class HistoricFragment extends Fragment {
     private BeaconListAdapter adapter;
     private List<BeaconsNavigationModel> mListBeaconNavigationModel;
     private ListView mList;
-    private Button backButton;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,15 +58,6 @@ public class HistoricFragment extends Fragment {
         adapter = new BeaconListAdapter(getActivity(), mListBeaconNavigationModel);
         mList = (ListView) layout.findViewById(R.id.device_list);
         mList.setAdapter(adapter);
-
-        backButton = (Button) layout.findViewById(R.id.backButton);
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         // Disable the touch to prevent the wrong speech
         layout.setEnabled(false);

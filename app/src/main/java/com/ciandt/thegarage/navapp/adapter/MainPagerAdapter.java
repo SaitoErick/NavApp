@@ -48,8 +48,8 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
                 NavigationFragment navigationFragment = new NavigationFragment();
                 return navigationFragment;
             case 1:
-                DiscoveryFragment discoveryFragment = new DiscoveryFragment();
-                return discoveryFragment;
+                HistoricFragment historicFragment = new HistoricFragment();
+                return historicFragment;
             case 2:
                 HelpUsersFragment helpFragment = new HelpUsersFragment();
                 return helpFragment;

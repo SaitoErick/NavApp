@@ -2,7 +2,7 @@
 <resources>
     <string-array name="main_sliding_tab_headers">
         <item>Navegação</item>
-        <item>Busca</item>
+        <item>Histórico</item>
         <item>Ajuda</item>
     </string-array>
 </resources>

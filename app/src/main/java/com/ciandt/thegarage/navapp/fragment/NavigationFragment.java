@@ -8,10 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +28,7 @@ import com.ciandt.thegarage.navapp.model.BeaconsNavigationModel;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
+import com.estimote.sdk.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,7 +64,6 @@ public class NavigationFragment extends Fragment implements SensorEventListener,
     private boolean scanning = true;
 
     private ProgressBar mProgressBar;
-    private FloatingActionButton mHistoricButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,7 +82,6 @@ public class NavigationFragment extends Fragment implements SensorEventListener,
 
         BeaconsNavigationModel mBeaconsNavigationModel = new BeaconsNavigationModel();
         mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
-        mHistoricButton = (FloatingActionButton) layout.findViewById(R.id.historicButton);
         // Disable the touch to prevent the wrong speech
         layout.setEnabled(false);
 
@@ -95,20 +91,6 @@ public class NavigationFragment extends Fragment implements SensorEventListener,
         mAccel = 0.00f;
         mAccelCurrent = SensorManager.GRAVITY_EARTH;
         mAccelLast = SensorManager.GRAVITY_EARTH;
-
-        mHistoricButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                Fragment historicFragment = new HistoricFragment();
-                fragmentTransaction.add(R.id.historicFragment   , historicFragment);
-                fragmentTransaction.commit();
-
-                historicFragment.setUserVisibleHint(false);
-            }
-        });
 
         return layout;
     }
@@ -184,7 +166,7 @@ public class NavigationFragment extends Fragment implements SensorEventListener,
                 Log.i(TAG, String.valueOf("Scanning : " + scanning));
 
                 if (!scanning) {
-                    Log.i(TAG, String.valueOf("Scanning - Inicio"));
+                        Log.i(TAG, String.valueOf("Scanning - Inicio"));
                     scanning = true;
                     connectToServiceScannBeacon();
                 }
@@ -222,7 +204,6 @@ public class NavigationFragment extends Fragment implements SensorEventListener,
     }
 
     public void requestInfosBeacon(Beacon beacon) {
-
         mBeacon = beacon;
 
         RequestQueue queue = VolleySingleton.getInstance(getActivity()).getRequestQueue();
@@ -265,7 +246,7 @@ public class NavigationFragment extends Fragment implements SensorEventListener,
             mDescriptionBeacon = payload.getString("description");
             mMessageBeacon = payload.getString("message");
 
-            Toast.makeText(getActivity().getApplicationContext(), "Local: " + mDescriptionBeacon, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), mMessageBeacon, Toast.LENGTH_LONG).show();
 
             Log.i(TAG, "mMessageBeacon=" + mMessageBeacon);
             Log.i(TAG, "mDescriptionBeacon=" + mDescriptionBeacon);
@@ -294,14 +275,11 @@ public class NavigationFragment extends Fragment implements SensorEventListener,
         }
 
         Log.i(TAG, String.valueOf("Scanning - FIM"));
+
     }
 
     @Override
     public void onErrorResponse(VolleyError volleyError) {
-        Toast.makeText(getActivity().getApplicationContext(),
-                R.string.mensagem_falha_servico_beacon, Toast.LENGTH_LONG).show();
-        connectToServiceScannBeacon();
-        Toast.makeText(getActivity().getApplicationContext(), R.string.mensagem_falha_servico_beacon, Toast.LENGTH_LONG).show();
     }
 
     @Override
