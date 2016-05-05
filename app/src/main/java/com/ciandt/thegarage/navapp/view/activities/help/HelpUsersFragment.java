@@ -1,4 +1,4 @@
-package com.ciandt.thegarage.navapp.fragment;
+package com.ciandt.thegarage.navapp.view.activities.help;
 
 
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.ciandt.thegarage.navapp.fragment;
+package com.ciandt.thegarage.navapp.view.activities.discovery;
 
 
 import android.os.Bundle;
@@ -22,7 +22,7 @@ public class DiscoveryFragment extends Fragment {
     }
 
     @Override
-    public  void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
     }
@@ -50,12 +50,6 @@ public class DiscoveryFragment extends Fragment {
     public void onStop() {
         super.onStop();
         Log.i(TAG, "onStop");
-        /*try {
-            //Stop busca de Beacon
-            mBeaconManager.stopRanging(ALL_ESTIMOTE_BEACONS_REGION);
-        } catch (RemoteException e) {
-            Log.d(TAG, "Error while stopping ranging", e);
-        }*/
     }
 
     @Override

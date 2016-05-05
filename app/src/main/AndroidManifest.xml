@@ -10,7 +10,7 @@
 
     <application
         android:allowBackup="true"
-        android:name="com.ciandt.thegarage.navapp.NavAplication"
+        android:name=".view.NavAplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -23,7 +23,7 @@
             android:value="com.ciandt.thegarage.navapp.model.BeaconsNavigationModel" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".view.activities.main.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

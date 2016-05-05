@@ -1,7 +1,6 @@
 package com.ciandt.thegarage.navapp.model;
 
 import com.estimote.sdk.Beacon;
-import com.estimote.sdk.Utils;
 
 /**
  * Created by carlos on 9/27/15.

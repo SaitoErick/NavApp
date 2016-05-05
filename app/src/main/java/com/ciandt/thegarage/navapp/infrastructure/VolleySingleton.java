@@ -1,4 +1,4 @@
-package com.ciandt.thegarage.navapp.helper;
+package com.ciandt.thegarage.navapp.infrastructure;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,31 +18,41 @@ public class VolleySingleton {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
 
-    private VolleySingleton(Context context){
+    private VolleySingleton(Context context) {
         mRequestQueue = Volley.newRequestQueue(context);
         mImageLoader = new ImageLoader(this.mRequestQueue, new BitmapCache(50));
     }
 
     public static VolleySingleton getInstance(Context context) {
-        if(mInstance == null){
+        if (mInstance == null) {
             mInstance = new VolleySingleton(context);
         }
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue(){ return this.mRequestQueue; }
+    public RequestQueue getRequestQueue() {
+        return this.mRequestQueue;
+    }
 
-    public ImageLoader getImageLoader(){ return this.mImageLoader; }
+    public ImageLoader getImageLoader() {
+        return this.mImageLoader;
+    }
 
     public class BitmapCache extends LruCache implements ImageLoader.ImageCache {
 
-        public BitmapCache(int maxSize) { super(maxSize); }
+        public BitmapCache(int maxSize) {
+            super(maxSize);
+        }
 
         @Override
-        public Bitmap getBitmap(String url){ return (Bitmap)get(url); }
+        public Bitmap getBitmap(String url) {
+            return (Bitmap) get(url);
+        }
 
         @Override
-        public void putBitmap(String url, Bitmap bitmap){ put(url, bitmap); }
+        public void putBitmap(String url, Bitmap bitmap) {
+            put(url, bitmap);
+        }
     }
 
 

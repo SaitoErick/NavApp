@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.ciandt.thegarage.navapp"
-        minSdkVersion 18
-        targetSdkVersion 22
-        versionCode 700000002
-        versionName "1.0.2"
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0.0"
 
         // Enabling multidex support.
         multiDexEnabled true
@@ -24,11 +24,17 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.estimote:sdk:0.8.7@aar'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'com.android.support:multidex:1.0.0'
-    compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:design:23.3.0'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile "com.squareup.retrofit2:retrofit:2.0.2"
+    compile "com.squareup.retrofit2:converter-gson:2.0.2"
+    compile "com.squareup.retrofit2:adapter-rxjava:2.0.2"
+    compile "com.squareup.okhttp3:logging-interceptor:3.1.2"
+
     compile files('libs/volley.jar')
 }
 
