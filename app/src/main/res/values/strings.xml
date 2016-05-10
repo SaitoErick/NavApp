@@ -14,4 +14,13 @@
     <string name="title_navigation">Navegação</string>
     <string name="title_historic">Histórico</string>
     <string name="title_help">Ajuda</string>
+
+    <string name="help">
+        \n
+        Para iniciar o monitoramento, toque na guia navegação e agite seu telefone para começar.\n
+        Caso queira rever alguns pontos por onde passou, toque na guia histórico.\n
+        Sempre que precisar rever este conteúdo, toque na guia ajuda.\n
+        Observação:\n
+        É necessário que o Talk Back ou outro leitor de telas esteja ligado.\n
+    </string>
 </resources>
