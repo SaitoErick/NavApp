@@ -1,4 +1,4 @@
-package com.ciandt.thegarage.navapp.view.activities.navigation;
+package com.ciandt.thegarage.navapp.view.activities.navigationall;
 
 import android.content.Context;
 
@@ -31,21 +31,7 @@ public interface NavigationContract {
      * Interface UserActionsListener
      */
     interface UserActionsListener {
-        void initScanBeacons();
-        void requestInfoBeacons(List<Beacon> beacons);
-        void saveBeacon(Beacon beacon, BeaconApi beaconApi);
-        void connectToServiceScanBeacon();
-        void onDestroy();
-        void onResume();
-        void onPause();
-        void onStart();
-    }
-
-    /**
-     * Interface UserActionsListener
-     */
-    interface UserActionsListenerAll {
-        void initScanBeacons();
+        void initScanBeacons(boolean enable);
         void requestInfoBeacons();
         void saveBeacon(BeaconApi beaconApi);
         void connectToServiceScanBeacon();

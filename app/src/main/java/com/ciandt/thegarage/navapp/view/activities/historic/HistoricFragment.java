@@ -63,7 +63,7 @@ public class HistoricFragment extends Fragment
         Log.i(TAG, "onResume");
 
         BeaconsNavigationModel beaconsNavigationModel = new BeaconsNavigationModel();
-        List<BeaconsNavigationModel> models = beaconsNavigationModel.getAll();
+        List<BeaconsNavigationModel> models = BeaconsNavigationModel.getAll();
 
         if (models != null) {
             Log.i(TAG, "onResume::" + models.toString());
