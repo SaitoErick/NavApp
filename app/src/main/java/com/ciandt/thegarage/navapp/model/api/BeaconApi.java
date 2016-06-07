@@ -1,18 +1,20 @@
 package com.ciandt.thegarage.navapp.model.api;
 
+import java.util.List;
+
 /**
  * Created by thales on 5/2/16.
  */
 public class BeaconApi {
-    private Payload payload;
+    private List<Payload> payload;
     private boolean error;
     private String errorMessage;
 
-    public Payload getPayload() {
+    public List<Payload> getPayload() {
         return payload;
     }
 
-    public void setPayload(Payload payload) {
+    public void setPayload(List<Payload> payload) {
         this.payload = payload;
     }
 

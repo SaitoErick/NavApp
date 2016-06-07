@@ -11,6 +11,9 @@ import retrofit2.http.Path;
  */
 public interface BeaconsApi {
 
-    @GET("findByMacAddress/macAddress={mac}")
-    Call<BeaconApi> getBeacon(@Path("mac") String macAddress);
+//    @GET("findByMacAddress/macAddress={mac}")
+//    Call<BeaconApi> getBeacon(@Path("mac") String macAddress);
+
+    @GET("listAll")
+    Call<BeaconApi> listAllBeacons();
 }

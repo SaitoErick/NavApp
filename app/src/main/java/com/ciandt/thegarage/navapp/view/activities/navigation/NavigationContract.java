@@ -32,8 +32,10 @@ public interface NavigationContract {
      */
     interface UserActionsListener {
         void initScanBeacons();
-        void requestInfoBeacons(List<Beacon> beacons);
-        void saveBeacon(Beacon beacon, BeaconApi beaconApi);
+//       void requestInfoBeacons(List<Beacon> beacons);
+        void requestAllBeacons();
+        void putBeaconsInList(BeaconApi beaconApi);
+        void saveBeacon(Beacon beacon);
         void connectToServiceScanBeacon();
         void onDestroy();
         void onResume();

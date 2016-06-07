@@ -151,8 +151,8 @@ public class NavigationPresenter implements NavigationContract.UserActionsListen
 
     @Override
     public void saveBeacon(BeaconApi beaconApi) {
-        Log.i(TAG, "messageBeacon=" + beaconApi.getPayload().getMessage());
-        Log.i(TAG, "descriptionBeacon=" + beaconApi.getPayload().getDescription());
+//        Log.i(TAG, "messageBeacon=" + beaconApi.getPayload().getMessage());
+//        Log.i(TAG, "descriptionBeacon=" + beaconApi.getPayload().getDescription());
         //Log.i(TAG, "macAddress=" + beacon.getMacAddress());
 
         BeaconsNavigationModel beaconsNavigationModel = new BeaconsNavigationModel();
@@ -168,7 +168,7 @@ public class NavigationPresenter implements NavigationContract.UserActionsListen
 
         Log.i(TAG, "returnSave::" + returnSave);*/
 
-        this.mView.showMessage(beaconApi.getPayload().getMessage());
+//        this.mView.showMessage(beaconApi.getPayload().getMessage());
     }
 
     @Override

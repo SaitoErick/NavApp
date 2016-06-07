@@ -18,7 +18,7 @@ import android.util.Log;
 import com.ciandt.thegarage.navapp.infrastructure.Constants;
 import com.ciandt.thegarage.navapp.R;
 import com.ciandt.thegarage.navapp.view.activities.help.HelpUsersFragment;
-import com.ciandt.thegarage.navapp.view.activities.navigationall.NavigationFragment;
+import com.ciandt.thegarage.navapp.view.activities.navigation.NavigationFragment;
 import com.ciandt.thegarage.navapp.view.activities.historic.HistoricFragment;
 
 public class MainActivity extends AppCompatActivity {
